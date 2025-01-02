@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include<windows.h>
 #include<iostream>
-
+constexpr double SPEED = 0.09;
 class pacman
 {
 private:
@@ -23,7 +23,7 @@ public:
 	{
 		x = 0;
 		y = 0;
-		speed = 0.09;
+		speed = SPEED;
 	}
 	void move()
 	{
