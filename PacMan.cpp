@@ -84,7 +84,7 @@ private:
 	};
 public:
 	position p;
-	movement m;
+	movement m{};
 	pacman()
 	{
 		movement m;
@@ -92,6 +92,7 @@ public:
 		p.y = 300;
 		speed = SPEED;
 	}
+
 	void move()
 	{
 
@@ -180,16 +181,17 @@ private:
 		bool down;
 	};
 public:
-	movement m;
-	ghost(const int x, const int y, Color color)
+	movement m{};
+	ghost(const int x, const int y, const Color color)
 	{
 		p.x = x;
 		p.y = y;
 		color1 = color;
 	}
+
 	void change_direction() {
 		// Losowa zmiana kierunku o 90 stopni
-		int direction = rand() % 4;
+		const int direction = rand() % 4;
 		if (direction == 0) {
 			m.left = true;
 			m.right = m.up = m.down = false;
