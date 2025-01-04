@@ -523,4 +523,4 @@ void map3(labirynth& l)
 	l.add_wall(910, 310, 80, 20);//lewy dol
 	l.add_wall(1070, 310, 100, 20);//prawy dol
 	l.add_wall(980, 170, 100, 80);
-}
+}  
