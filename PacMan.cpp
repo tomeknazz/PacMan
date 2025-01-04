@@ -1,5 +1,3 @@
-//dzialajacy labirynt 
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
@@ -84,7 +82,7 @@ private:
 	};
 public:
 	position p;
-	movement m;
+	movement m{};
 	pacman()
 	{
 		movement m;
@@ -92,6 +90,7 @@ public:
 		p.y = 40;
 		speed = SPEED;
 	}
+
 	void move()
 	{
 
@@ -180,16 +179,18 @@ private:
 		bool down;
 	};
 public:
-	movement m;
-	ghost(const int x, const int y, Color color)
+	movement m{};
+	ghost(const int x, const int y, const Color color)
 	{
 		p.x = x;
 		p.y = y;
 		color1 = color;
 	}
+
 	void change_direction() {
+
 		// Losowa zmiana kierunku o 90 stopni
-		int direction = rand() % 4;
+		const int direction = rand() % 4;
 		if (direction == 0) {
 			m.left = true;
 			m.right = m.up = m.down = false;
@@ -219,7 +220,7 @@ public:
 		if (wall.check_collision(get_bounding_box())) {
 			change_direction(); // Zmiana kierunku po kolizji
 		}
-		if (static_cast<int>(floor(sqrt(pow(pacman.get_position().x, 2) + pow(pacman.get_position().y, 2)))) % 100 == 0) {
+		if (static_cast<int>(floor(sqrt(pow(pacman.get_position().x, 2) + pow(pacman.get_position().y, 2)))) % 200 == 0) {
 			const float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX); // Generate a random float between 0 and 1
 			if (r < 0.25) {
 				m.down = true;
@@ -333,8 +334,6 @@ void map1(labirynth& l)
 	l.add_wall(0, 30, 30, 660); // Œciana pionowa lewa
 	l.add_wall(0, 690, 1260, 30); // Œciana pozioma dolna
 	l.add_wall(1230, 30, 30, 660); // Œciana pionowa prawa
-
-	//Mapa 1
 
 	//4 rogi
 	//lewy gora
