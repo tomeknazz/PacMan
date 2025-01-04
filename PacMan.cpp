@@ -88,8 +88,8 @@ public:
 	pacman()
 	{
 		movement m;
-		p.x = 300;
-		p.y = 300;
+		p.x = 40;
+		p.y = 40;
 		speed = SPEED;
 	}
 	void move()
@@ -275,12 +275,15 @@ int main() {
 	ghost g1(1180, 40, Color::Red);
 	ghost g2(40, 640, Color::Cyan);
 	ghost g3(1180, 640, Color::White);
-	ghost g4(570, 400, Color::Magenta);
+	ghost g4(40, 40, Color::Magenta);
 
 	// Tworzenie labiryntu
 	labirynth labirynth;
 
-	map1(labirynth);
+	/*map1(labirynth);*/
+	map2(labirynth);
+	/*map3(labirynth);*/
+	
 
 	while (window.isOpen()) {
 		Event event;
@@ -378,4 +381,146 @@ void map1(labirynth& l)
 	l.add_wall(660, 230, 80, 30);//poziomy gora
 	l.add_wall(660, 345, 80, 30);//poziomy srodek
 	l.add_wall(660, 460, 80, 30);//poziomy dol
+}
+void map2(labirynth& l)
+{	//ramki
+	l.add_wall(0, 0, 1260, 20); // Œciana pozioma gorna
+	l.add_wall(0, 20, 20, 680); // Œciana pionowa lewa
+	l.add_wall(0, 700, 1260, 20); // Œciana pozioma dolna
+	l.add_wall(1240, 20, 20, 680); // Œciana pionowa prawa
+	///lewa strona
+	l.add_wall(100, 600, 120, 20);//poziomy
+	l.add_wall(100, 520, 20, 80);//pionowy
+
+	l.add_wall(300, 600, 20, 100);//pionowy
+
+	l.add_wall(400, 600, 100, 20);//poziomy
+	l.add_wall(500, 500, 20, 120);//pionowy
+	l.add_wall(400, 500, 20, 20);//kwadrat
+
+	l.add_wall(200, 500, 120, 20);//poziomy cienki
+	l.add_wall(200, 400, 20, 100);//pionowy 
+	l.add_wall(100, 400, 100, 40);//poziomy gruby
+
+	l.add_wall(300, 400, 120, 20);//poziomy lewy
+	l.add_wall(300, 200, 20, 200);//pionowy lewy
+	l.add_wall(500, 200, 20, 220);//pionowy prawy
+	l.add_wall(400, 300, 100, 20);//poziomy prawy
+	l.add_wall(400, 200, 20, 20);//kwadrat
+
+	l.add_wall(20, 280, 200, 40);//gruby poziomy
+	l.add_wall(200, 200, 20, 80);//pionowy dolny
+	l.add_wall(100, 100, 20, 100);//pionowy gorny
+	l.add_wall(120, 100, 100, 20);//poziomy gorny
+
+	l.add_wall(300, 20, 20, 100);//pionowy samotnik
+	l.add_wall(400, 100, 120, 20);//poziomy samotnik
+
+	//srodek
+	l.add_wall(600, 20, 60, 100);//gorny prostokat
+	l.add_wall(600, 200, 60, 60);//gorny kwadrat
+	l.add_wall(600, 340, 60, 40);//srodkowy
+	l.add_wall(600, 460, 60, 60);//dolny kwadrat
+	l.add_wall(600, 600, 60, 100);//dolny prostokat
+
+
+	//prawa strona
+	l.add_wall(740, 100, 120, 20);//poziomy lewy
+	l.add_wall(740, 120, 20, 100);//pionowy lewy
+	l.add_wall(840, 200, 20, 20);//kwadrat
+
+	l.add_wall(940, 20, 20, 100);//pionowy samotny
+	l.add_wall(1040, 100, 120, 20);//poziomy rog
+	l.add_wall(1140, 120, 20, 80);//pionowy rog
+
+	l.add_wall(940, 200, 120, 20);//poziomy
+	l.add_wall(1040, 220, 20, 100);//pionowy cienki
+	l.add_wall(1060, 280, 100, 40);//poziomy gruby
+
+	l.add_wall(740, 300, 20, 220);//pionowy
+	l.add_wall(760, 400, 100, 20);//poziomy
+	l.add_wall(840, 300, 120, 20);//pionowy
+	l.add_wall(940, 320, 20, 200);//poziomy
+	l.add_wall(840, 500, 20, 20);//kwadrat
+
+	l.add_wall(1040, 400, 200, 40);//gruby ze sciany
+	l.add_wall(1040, 440, 20, 80);//pionowy
+
+	l.add_wall(740, 600, 120, 20);//poziomy samotnik
+	l.add_wall(940, 600, 20, 100);//pionowy samotnik
+	l.add_wall(1040, 600, 120, 20);//poziomy
+	l.add_wall(1140, 520, 20, 80);
+}
+void map3(labirynth& l)
+{
+	//ramki
+	l.add_wall(0, 0, 1260, 10); // Œciana pozioma gorna
+	l.add_wall(0, 10, 10, 700); // Œciana pionowa lewa
+	l.add_wall(0, 710, 1260, 10); // Œciana pozioma dolna
+	l.add_wall(1250, 10, 10, 700); // Œciana pionowa prawa
+
+	//lewy rog
+	 l.add_wall(10, 510, 80, 20);//maly bolec ze sciany poziomy
+	 l.add_wall(270, 410, 100, 20);//samotny poziomy
+
+	//niepelnosprawne f
+	l.add_wall(90, 610, 280, 20);//poziomy z f
+	l.add_wall(270, 510, 20, 100);//pionowy z f
+	
+	//odwrocona elka
+	l.add_wall(170, 410, 20, 120);//pionowy z odwroconej elki
+	l.add_wall(90, 410, 80, 20);//poziomy z odwroconej elki
+
+	//kinole
+	l.add_wall(370, 510, 180, 20);//kinol dolny poziome
+	l.add_wall(450,530,20,100);//kinol dolny pionowe
+
+	l.add_wall(450,330,20,100);//kinol pionowe gorne
+	l.add_wall(370,310,180,20);//kinol poziome gora
+
+	l.add_wall(370, 90, 180, 20);//kinol najwyzszy poziome
+	l.add_wall(450, 110, 20, 120);//kinol najwyzszy pionowe
+
+	//prawy rog
+	l.add_wall(910,610,85,20); // poziomy dol 1
+	l.add_wall(1075, 610, 85, 20);//poziomy dol 2
+	l.add_wall(830,510,330,20);//poziomy gora
+	l.add_wall(910, 410, 20, 100);//pionowy gora
+	l.add_wall(550, 410, 100, 20);
+	l.add_wall(1000, 410, 160, 20);
+	//niepelnosprawne f
+	l.add_wall(550,610,280,20);//poziomy z f
+	l.add_wall(630,510,20,100);//pionowy z f
+
+	
+
+	//odwr elka
+	l.add_wall(730,410,20,120);//pionowy z elki
+	l.add_wall(750, 410, 80, 20);//poziomy z elki
+
+	//srodek
+	l.add_wall(270, 230, 20, 100);//pionowy lewy
+	l.add_wall(270, 210, 100, 20);//poziomy lewy
+	l.add_wall(630, 230, 20, 100);//pionowy prawy
+	l.add_wall(550, 210, 100, 20);//poziomy prawy
+
+
+	//lewy gora
+	l.add_wall(90, 90, 20, 240);//pionowy
+	l.add_wall(110, 210, 80, 20);//poziomy
+	l.add_wall(190, 10, 20, 80);//pionowy lewy gora
+	l.add_wall(190, 90, 100, 20);//poziomy lewy gora
+
+	//prawy gora
+	l.add_wall(630, 90, 100, 20);//poziomy prawy gora
+	l.add_wall(710, 10, 20, 80);//pionowy prawy gora
+	l.add_wall(730, 210, 80, 20);//poziomy
+	l.add_wall(810, 90, 20, 240);//pionowy
+	//kwadrat duzy
+	l.add_wall(890, 90, 20, 240);//lewy bok
+	l.add_wall(910, 90, 260, 20);//gora
+	l.add_wall(1150, 90, 20, 240);//prawy bok
+	l.add_wall(910, 310, 80, 20);//lewy dol
+	l.add_wall(1070, 310, 100, 20);//prawy dol
+	l.add_wall(980, 170, 100, 80);
 }
