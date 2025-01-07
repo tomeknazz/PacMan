@@ -964,7 +964,7 @@ void fill_with_punkty(punkty& punkty, const float x, const float y, const int n,
 }
 
 
-void generate_pause_text(Font& font, Text& paused_text, Text& continue_text,Text& help_text,Text& quit_text,Text& confirmation) {
+void generate_pause_text(Font& font, Text& paused_text, Text& continue_text, Text& help_text, Text& quit_text, Text& confirmation) {
 	if (!font.loadFromFile("bruno.ttf")) {
 		cerr << "Failed to load font!" << endl;
 		exit(-1);
@@ -1001,62 +1001,106 @@ void generate_pause_text(Font& font, Text& paused_text, Text& continue_text,Text
 	confirmation.setPosition(WIDTH / 2 - confirmation.getGlobalBounds().width / 2, 500);
 }
 
-void display_menu(RenderWindow& window, Font& font) {
-    Texture backgroundTexture;
-    if (!backgroundTexture.loadFromFile("back1.png")) {
-        cerr << "Failed to load background image!" << endl;
-        exit(-1);
-    }
-    Sprite backgroundSprite;
-    backgroundSprite.setTexture(backgroundTexture);
+void choose_map(RenderWindow& window, Font& font, int& choice, Sprite& backgroundSprite, RectangleShape& dark_background, Text& title, Text& author) {
+	Text map_text;
+	map_text.setFont(font);
+	map_text.setString("1.  Map 1\n2. Map 2\n3. Map 3");
+	map_text.setCharacterSize(30);
+	map_text.setFillColor(Color::White);
+	map_text.setPosition(WIDTH / 2 - map_text.getGlobalBounds().width / 2, 300);
+
+	while (window.isOpen()) {
+		Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == Event::Closed)
+				window.close();
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num1) {
+				choice = 1;
+				return;
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num2) {
+				choice = 2;
+				return;
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num3) {
+				choice = 3;
+				return;
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+				window.close(); // Quit the game
+		}
+
+		window.clear();
+		window.draw(backgroundSprite);
+		window.draw(dark_background);
+		window.draw(title);
+		window.draw(map_text);
+		window.draw(author);
+		window.display();
+	}
+}
+
+
+void display_menu(RenderWindow& window, Font& font, int& choice) {
+	Texture backgroundTexture;
+	if (!backgroundTexture.loadFromFile("back1.png")) {
+		cerr << "Failed to load background image!" << endl;
+		exit(-1);
+	}
+	Sprite backgroundSprite;
+	backgroundSprite.setTexture(backgroundTexture);
 	RectangleShape dark_background(Vector2f(WIDTH, HEIGHT));
 	dark_background.setFillColor(Color(0, 0, 0, 200));
-    Text title, start_text, quit_text,author;
-    title.setFont(font);
-    title.setString("PacMan");
-    title.setCharacterSize(60);
-    title.setFillColor(Color::White);
-    title.setPosition(WIDTH / 2 - title.getGlobalBounds().width / 2, 100);
+	Text title, start_text, quit_text, author;
+	title.setFont(font);
+	title.setString("PacMan");
+	title.setCharacterSize(60);
+	title.setFillColor(Color::White);
+	title.setPosition(WIDTH / 2 - title.getGlobalBounds().width / 2, 100);
 
-    start_text.setFont(font);
-    start_text.setString("Press Enter to Start");
-    start_text.setCharacterSize(30);
-    start_text.setFillColor(Color::White);
-    start_text.setPosition(WIDTH / 2 - start_text.getGlobalBounds().width / 2, 300);
+	start_text.setFont(font);
+	start_text.setString("Press Enter to Start");
+	start_text.setCharacterSize(30);
+	start_text.setFillColor(Color::White);
+	start_text.setPosition(WIDTH / 2 - start_text.getGlobalBounds().width / 2, 300);
 
-    quit_text.setFont(font);
-    quit_text.setString("Press Escape to Quit");
-    quit_text.setCharacterSize(30);
-    quit_text.setFillColor(Color::White);
-    quit_text.setPosition(WIDTH / 2 - quit_text.getGlobalBounds().width / 2, 400);
+	quit_text.setFont(font);
+	quit_text.setString("Press Escape to Quit");
+	quit_text.setCharacterSize(30);
+	quit_text.setFillColor(Color::White);
+	quit_text.setPosition(WIDTH / 2 - quit_text.getGlobalBounds().width / 2, 400);
 
 	author.setFont(font);
-	author.setString("Nikodem Kozlowski 199239 ARiSS1\n	Tomasz Nazar 197613 ACiR3");
+	author.setString("Nikodem Kozlowski 199239 ARiSS1\nTomasz Nazar 197613 ACiR3");
 	author.setCharacterSize(15);
 	author.setFillColor(Color::White);
 	author.setPosition(WIDTH / 2 - author.getGlobalBounds().width / 2, 600);
 
-    while (window.isOpen()) {
-        Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == Event::Closed)
-                window.close();
-            if (event.type == Event::KeyPressed && event.key.code == Keyboard::Enter)
-                return; // Start the game
-            if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
-                window.close(); // Quit the game
-        }
+	while (window.isOpen()) {
+		Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == Event::Closed)
+				window.close();
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Enter) {
+				choose_map(window, font, choice, backgroundSprite, dark_background, title, author);
+				return;
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+				window.close(); // Quit the game
+		}
 
-        window.clear();
-        window.draw(backgroundSprite);
+		window.clear();
+		window.draw(backgroundSprite);
 		window.draw(dark_background);
-        window.draw(title);
-        window.draw(start_text);
-        window.draw(quit_text);
+		window.draw(title);
+		window.draw(start_text);
+		window.draw(quit_text);
 		window.draw(author);
-        window.display();
-    }
+		window.display();
+	}
 }
+
+
 
 
 int main() {
@@ -1071,10 +1115,6 @@ int main() {
 	punkty punkty;
 	labirynth labirynth;
 
-	//map1(labirynth);
-	map2(labirynth, punkty);
-	//map3(labirynth);
-
 	bool is_paused = false;
 	bool quit_confirmation = false;
 
@@ -1085,9 +1125,24 @@ int main() {
 
 	RectangleShape dark_background(Vector2f(WIDTH, HEIGHT));
 	dark_background.setFillColor(Color(0, 0, 0, 220)); // Semi-transparent dark background
-
+	int choice = 0;
 	// Display the menu
-	display_menu(window, font);
+	display_menu(window, font, choice);
+
+	switch (choice) {
+	case 1:
+		map1(labirynth);
+		break;
+	case 2:
+		map2(labirynth, punkty);
+		break;
+	case 3:
+		map3(labirynth);
+		break;
+	default:
+		window.close();
+		return 0;
+	}
 
 	while (window.isOpen()) {
 		Event event;
@@ -1153,6 +1208,7 @@ int main() {
 	}
 	return 0;
 }
+
 
 
 void map1(labirynth& l)
