@@ -563,6 +563,7 @@
 #include <SFML/System.hpp>
 #include<windows.h>
 #include <cstdlib>
+#include <iostream>
 
 constexpr float SPEED = 0.05;
 constexpr int WIDTH = 1260;
@@ -854,8 +855,8 @@ public:
 
 	// Sprawdza, czy pacman koliduje z ktoryms z punktow
 	bool check_collision(const FloatRect& pacman_bounds) {
-		for (auto& point : points) 
-			if (pacman_bounds.intersects(point.get_bounding_box())) 
+		for (auto& point : points)
+			if (pacman_bounds.intersects(point.get_bounding_box()))
 				return true;
 		return false;
 	}
@@ -869,7 +870,7 @@ public:
 	void remove_punkt(const FloatRect& pacman_bounds) {
 		points.erase(
 			std::remove_if(points.begin(), points.end(),
-				[&](const punkt& point) {return pacman_bounds.intersects(point.get_bounding_box());}),points.end());
+				[&](const punkt& point) {return pacman_bounds.intersects(point.get_bounding_box()); }), points.end());
 	}
 
 	// Zwraca wektor punktow
@@ -951,15 +952,35 @@ public:
 //};
 
 void map1(labirynth& l);
-void map2(labirynth& l,punkty &punkty);
+void map2(labirynth& l, punkty& punkty);
 void map3(labirynth& l);
 
-void fill_with_punkty(punkty& punkty, const float x, const float y, const int n,const int m, const float distance) {
+void fill_with_punkty(punkty& punkty, const float x, const float y, const int n, const int m, const float distance) {
 	for (int i = 0; i < n; i++) {
 		punkty.add_punkt(x + i * distance, y);
 		for (int j = 0; j < m; j++)
 			punkty.add_punkt(x + i * distance, y + j * distance);
 	}
+}
+
+
+void generate_pause_text(Font& font, Text& paused_text, Text& continue_text) {
+	if (!font.loadFromFile("bruno.ttf")) {
+		cerr << "Failed to load font!" << endl;
+		exit(-1);
+	}
+
+	paused_text.setFont(font);
+	paused_text.setString("Game Paused");
+	paused_text.setCharacterSize(60);
+	paused_text.setFillColor(Color::White);
+	paused_text.setPosition(WIDTH / 2 - paused_text.getGlobalBounds().width / 2, 50);
+
+	continue_text.setFont(font);
+	continue_text.setString("Press Escape to continue");
+	continue_text.setCharacterSize(30);
+	continue_text.setFillColor(Color::White);
+	continue_text.setPosition(WIDTH / 2 - continue_text.getGlobalBounds().width / 2, 500);
 }
 
 int main() {
@@ -973,59 +994,71 @@ int main() {
 
 	punkty punkty;
 	labirynth labirynth;
-	
+
 	//map1(labirynth);
-	map2(labirynth,punkty);
+	map2(labirynth, punkty);
 	//map3(labirynth);
 
-	vector<Vector2f> ghostStartingPositions = {
-		{40, 40},{1180, 40},{40, 640},{1180, 640},{40, 40}
-	};
-	/*GamePoints points(labirynth, ghostStartingPositions);*/
+	bool is_paused = false;
 
+	// Load font for displaying "Paused" text
+	Font font;
+	Text paused_text, continue_text;
+	generate_pause_text(font, paused_text, continue_text);
+
+	RectangleShape dark_background(Vector2f(WIDTH, HEIGHT));
+	dark_background.setFillColor(Color(0, 0, 0, 220)); // Semi-transparent dark background
 
 	while (window.isOpen()) {
 		Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == Event::Closed)
 				window.close();
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+				is_paused = !is_paused;
 		}
 
-		// Ruch PacMana
-		p.move();
-		p.handle_collision_with_wall(labirynth);
-		if (punkty.check_collision(p.get_bounding_box())) {
-			punkty.remove_punkt(p.get_bounding_box()); // Usuwamy punkty, ktore pacman zje
-		}
-		/*points.checkCollisionWithPacman(p);*/
+		if (!is_paused) {
+			// Ruch PacMana
+			p.move();
+			p.handle_collision_with_wall(labirynth);
+			if (punkty.check_collision(p.get_bounding_box())) {
+				punkty.remove_punkt(p.get_bounding_box()); // Usuwamy punkty, ktore pacman zje
+			}
 
-		// Ruch duszkow z uwzglednieniem kolizji z labiryntem
-		for (const auto& wall : labirynth.get_walls()) {
-			if (wall.check_collision(g.get_bounding_box())) g.change_direction();
-			if (wall.check_collision(g1.get_bounding_box())) g1.change_direction();
-			if (wall.check_collision(g2.get_bounding_box())) g2.change_direction();
-			if (wall.check_collision(g3.get_bounding_box())) g3.change_direction();
-			if (wall.check_collision(g4.get_bounding_box())) g4.change_direction();
-		}
+			// Ruch duszkow z uwzglednieniem kolizji z labiryntem
+			for (const auto& wall : labirynth.get_walls()) {
+				if (wall.check_collision(g.get_bounding_box())) g.change_direction();
+				if (wall.check_collision(g1.get_bounding_box())) g1.change_direction();
+				if (wall.check_collision(g2.get_bounding_box())) g2.change_direction();
+				if (wall.check_collision(g3.get_bounding_box())) g3.change_direction();
+				if (wall.check_collision(g4.get_bounding_box())) g4.change_direction();
+			}
 
-		g.move(p, wall(0, 0, 0, 0));  // Duszki uzywaja swojej logiki
-		g1.move(p, wall(0, 0, 0, 0)); // Uzycie pustego walla, bo logika jest w glownym
-		g2.move(p, wall(0, 0, 0, 0));
-		g3.move(p, wall(0, 0, 0, 0));
-		g4.move(p, wall(0, 0, 0, 0));
+			g.move(p, wall(0, 0, 0, 0));  // Duszki uzywaja swojej logiki
+			g1.move(p, wall(0, 0, 0, 0)); // Uzycie pustego walla, bo logika jest w glownym
+			g2.move(p, wall(0, 0, 0, 0));
+			g3.move(p, wall(0, 0, 0, 0));
+			g4.move(p, wall(0, 0, 0, 0));
+		}
 
 		// Rysowanie
 		window.clear();
 		punkty.draw(window);
 		labirynth.draw(window);
-		
-		/*points.draw(window);*/
 		g.draw(window);
 		g1.draw(window);
 		g2.draw(window);
 		g3.draw(window);
 		g4.draw(window);
 		p.draw(window);
+
+		if (is_paused) {
+			window.draw(dark_background);
+			window.draw(paused_text);
+			window.draw(continue_text);
+		}
+
 		window.display();
 	}
 	return 0;
@@ -1088,8 +1121,8 @@ void map1(labirynth& l)
 
 void map2(labirynth& l, punkty& punkty)
 {
-	fill_with_punkty(punkty, 50, 50, 11,13, 50);
-	fill_with_punkty(punkty, 690, 50, 11,13, 50);
+	fill_with_punkty(punkty, 50, 50, 11, 13, 50);
+	fill_with_punkty(punkty, 690, 50, 11, 13, 50);
 	fill_with_punkty(punkty, 620, 150, 1, 2, 150);
 	fill_with_punkty(punkty, 620, 400, 1, 2, 150);
 
