@@ -50,7 +50,7 @@
 //		return false;
 //	}
 //
-//	// Rysuje wszystkie œciany w labiryncie
+//	// Rysuje wszystkie sciany w labiryncie
 //	void draw(RenderWindow& window) const {
 //		for (const auto& wall : walls) {
 //			wall.draw(window);
@@ -331,10 +331,10 @@
 //void map1(labirynth& l)
 //{
 //	//ramki
-//	l.add_wall(0, 0, 1260, 30); // Œciana pozioma gorna
-//	l.add_wall(0, 30, 30, 660); // Œciana pionowa lewa
-//	l.add_wall(0, 690, 1260, 30); // Œciana pozioma dolna
-//	l.add_wall(1230, 30, 30, 660); // Œciana pionowa prawa
+//	l.add_wall(0, 0, 1260, 30); // sciana pozioma gorna
+//	l.add_wall(0, 30, 30, 660); // sciana pionowa lewa
+//	l.add_wall(0, 690, 1260, 30); // sciana pozioma dolna
+//	l.add_wall(1230, 30, 30, 660); // sciana pionowa prawa
 //
 //	//4 rogi
 //	//lewy gora
@@ -384,10 +384,10 @@
 //}
 //void map2(labirynth& l)
 //{	//ramki
-//	l.add_wall(0, 0, 1260, 20); // Œciana pozioma gorna
-//	l.add_wall(0, 20, 20, 680); // Œciana pionowa lewa
-//	l.add_wall(0, 700, 1260, 20); // Œciana pozioma dolna
-//	l.add_wall(1240, 20, 20, 680); // Œciana pionowa prawa
+//	l.add_wall(0, 0, 1260, 20); // sciana pozioma gorna
+//	l.add_wall(0, 20, 20, 680); // sciana pionowa lewa
+//	l.add_wall(0, 700, 1260, 20); // sciana pozioma dolna
+//	l.add_wall(1240, 20, 20, 680); // sciana pionowa prawa
 //	///lewa strona
 //	l.add_wall(100, 600, 120, 20);//poziomy
 //	l.add_wall(100, 520, 20, 80);//pionowy
@@ -454,10 +454,10 @@
 //void map3(labirynth& l)
 //{
 //	//ramki
-//	l.add_wall(0, 0, 1260, 10); // Œciana pozioma gorna
-//	l.add_wall(0, 10, 10, 700); // Œciana pionowa lewa
-//	l.add_wall(0, 710, 1260, 10); // Œciana pozioma dolna
-//	l.add_wall(1250, 10, 10, 700); // Œciana pionowa prawa
+//	l.add_wall(0, 0, 1260, 10); // sciana pozioma gorna
+//	l.add_wall(0, 10, 10, 700); // sciana pionowa lewa
+//	l.add_wall(0, 710, 1260, 10); // sciana pozioma dolna
+//	l.add_wall(1250, 10, 10, 700); // sciana pionowa prawa
 //
 //	//lewy rog
 //	 l.add_wall(10, 510, 80, 20);//maly bolec ze sciany poziomy
@@ -526,10 +526,10 @@
 //}  
 //void map4(labirynth& l) 
 //{
-//	l.add_wall(0, 0, 760, 40); // Œciana pozioma gorna
-//	l.add_wall(0, 40, 40, 800); // Œciana pionowa lewa
-//	l.add_wall(0, 840, 760, 40); // Œciana pozioma dolna
-//	l.add_wall(720, 40, 40, 800); // Œciana pionowa prawa
+//	l.add_wall(0, 0, 760, 40); // sciana pozioma gorna
+//	l.add_wall(0, 40, 40, 800); // sciana pionowa lewa
+//	l.add_wall(0, 840, 760, 40); // sciana pozioma dolna
+//	l.add_wall(720, 40, 40, 800); // sciana pionowa prawa
 //
 //	l.add_wall(80,80,80,80);
 //	l.add_wall(200, 80, 120, 80);
@@ -558,15 +558,13 @@
 //	l.add_wall(280, 520, 200, 40);
 //}
 
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include<windows.h>
-#include<iostream>
 #include <cstdlib>
 
-constexpr double SPEED = 0.05;
+constexpr float SPEED = 0.05;
 constexpr int WIDTH = 1260;
 constexpr int HEIGHT = 720;
 using namespace std;
@@ -589,12 +587,12 @@ public:
 	}
 };
 
-class Labirynth {
+class labirynth {
 private:
 	std::vector<wall> walls;
 
 public:
-	Labirynth() {}
+	labirynth() {}
 
 	// Dodaje sciane do labiryntu (x,y,width,height)
 	void add_wall(float x, float y, float width, float height) {
@@ -611,7 +609,7 @@ public:
 		return false;
 	}
 
-	// Rysuje wszystkie œciany w labiryncie
+	// Rysuje wszystkie sciany w labiryncie
 	void draw(RenderWindow& window) const {
 		for (const auto& wall : walls) {
 			wall.draw(window);
@@ -646,7 +644,6 @@ public:
 	movement m{};
 	pacman()
 	{
-		movement m;
 		p.x = 40;
 		p.y = 40;
 		speed = SPEED;
@@ -695,7 +692,7 @@ public:
 
 
 	}
-	void handle_collision_with_wall(const Labirynth& labirynth) {
+	void handle_collision_with_wall(const labirynth& labirynth) {
 		for (const auto& wall : labirynth.get_walls()) {
 			if (wall.check_collision(get_bounding_box())) {
 				// Cofnij ruch w przypadku kolizji
@@ -726,7 +723,7 @@ public:
 	{
 		return p;
 	}
-	
+
 };
 
 class ghost : public pacman
@@ -742,7 +739,7 @@ private:
 	};
 public:
 	movement m{};
-	ghost(const int x, const int y, const Color color)
+	ghost(const float x, const float y, const Color color)
 	{
 		p.x = x;
 		p.y = y;
@@ -782,8 +779,8 @@ public:
 		if (wall.check_collision(get_bounding_box())) {
 			change_direction(); // Zmiana kierunku po kolizji
 		}
-		if (static_cast<int>(floor(sqrt(pow(pacman.get_position().x, 2) + pow(pacman.get_position().y, 2)))) % 200 == 0) {
-			const float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX); // Generate a random float between 0 and 1
+		if (static_cast<int>(floor(sqrt(pow(pacman.get_position().x, 2) + pow(pacman.get_position().y, 2)))) % 200 == 0) { //Wylosuj nowy kierunek po przejechaniu 200 jednostek przez pacmana
+			const float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 			if (r < 0.25) {
 				m.down = true;
 				m.right = m.up = m.down = false;
@@ -825,69 +822,58 @@ public:
 		shape.setPosition(p.x, p.y);
 		window.draw(shape);
 	}
-	
 };
-class Punkt {
+
+class punkt {
 private:
 	CircleShape shape;
-
 public:
-	Punkt(float x, float y, float radius = 10.f) {
+	punkt(const float x, const float y, const float radius = 10.f) {
 		shape.setPosition(x, y);
 		shape.setRadius(radius);
 		shape.setFillColor(Color::White); // Mo¿esz ustawiæ dowolny kolor
 	}
-
 	// Zwraca bounding box punktu
 	FloatRect get_bounding_box() const {
 		return shape.getGlobalBounds();
 	}
-
 	// Rysuje punkt
 	void draw(RenderWindow& window) const {
 		window.draw(shape);
 	}
 };
 
-class Punkty {
+class punkty {
 private:
-	std::vector<Punkt> points; // Przechowywanie punktów
-
+	std::vector<punkt> points; // Przechowywanie punktów
 public:
 	// Dodaje punkt do wektora
 	void add_punkt(float x, float y, float radius = 10.f) {
 		points.emplace_back(x, y, radius);
 	}
 
-	// Sprawdza, czy pacman koliduje z którymœ z punktów
+	// Sprawdza, czy pacman koliduje z któryms z punktów
 	bool check_collision(const FloatRect& pacman_bounds) {
-		for (auto& point : points) {
-			if (pacman_bounds.intersects(point.get_bounding_box())) {
+		for (auto& point : points) 
+			if (pacman_bounds.intersects(point.get_bounding_box())) 
 				return true;
-			}
-		}
 		return false;
 	}
-
 	// Rysuje wszystkie punkty
 	void draw(RenderWindow& window) const {
-		for (const auto& point : points) {
+		for (const auto& point : points)
 			point.draw(window);
-		}
 	}
 
 	// Usuwa punkt (np. po zjedzeniu przez pacmana)
 	void remove_punkt(const FloatRect& pacman_bounds) {
 		points.erase(
 			std::remove_if(points.begin(), points.end(),
-				[&](const Punkt& point) {
-					return pacman_bounds.intersects(point.get_bounding_box());
-				}),
-			points.end());
+				[&](const punkt& point) {return pacman_bounds.intersects(point.get_bounding_box());}),points.end());
 	}
 
 	// Zwraca wektor punktów
-	const std::vector<Punkt>& get_punkty() const {
+	const std::vector<punkt>& get_punkty() const {
 		return points;
 	}
 };
@@ -906,7 +892,7 @@ public:
 //			for (float x = 0; x < WIDTH; x += 40.5) {
 //				FloatRect pointBounds(x + 10, y + 10 , 20, 20); // Obszar punktu
 //
-//				// SprawdŸ, czy punkt nie koliduje ze œcianami
+//				// SprawdŸ, czy punkt nie koliduje ze scianami
 //				bool collidesWithWall = false;
 //				for (const auto& wall : labirynth.get_walls()) {
 //					if (wall.check_collision(pointBounds)) {
@@ -919,7 +905,7 @@ public:
 //			
 //
 //				if (!collidesWithWall) {
-//					CircleShape point(10); // Promieñ 10 = œrednica 20
+//					CircleShape point(10); // Promieñ 10 = srednica 20
 //					point.setFillColor(Color::White);
 //					point.setPosition(x, y);
 //					points.push_back(point);
@@ -929,7 +915,7 @@ public:
 //	}
 //
 //	void checkCollisionWithPacman(const pacman& p) {
-//		FloatRect pacmanBounds(p.get_position().x, p.get_position().y, 30, 30); // PacMan ma œrednicê 40
+//		FloatRect pacmanBounds(p.get_position().x, p.get_position().y, 30, 30); // PacMan ma srednicê 40
 //
 //		for (auto it = points.begin(); it != points.end();) {
 //			if (it->getGlobalBounds().intersects(pacmanBounds)) {
@@ -965,10 +951,17 @@ public:
 //};
 
 
-void map1(Labirynth& l);
-void map2(Labirynth& l);
-void map3(Labirynth& l);
+void map1(labirynth& l);
+void map2(labirynth& l,punkty &punkty);
+void map3(labirynth& l);
 
+void fill_with_punkty(punkty& punkty, const float x, const float y, const int n,const int m, const float distance) {
+	for (int i = 0; i < n; i++) {
+		punkty.add_punkt(x + i * distance, y);
+		for (int j = 0; j < m; j++)
+			punkty.add_punkt(x + i * distance, y + j * distance);
+	}
+}
 
 int main() {
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "PacMan");
@@ -978,228 +971,13 @@ int main() {
 	ghost g2(40, 640, Color::Cyan);
 	ghost g3(1180, 640, Color::White);
 	ghost g4(40, 40, Color::Magenta);
-		
 
-	// Tworzenie labiryntu
-	Labirynth labirynth;
-
+	punkty punkty;
+	labirynth labirynth;
+	
 	//map1(labirynth);
-	map2(labirynth);
-	/*map3(labirynth);*/
-
-	//mapa 2
-	Punkty punkty;
-	//1 WIERSZ
-	punkty.add_punkt(100, 50);
-	punkty.add_punkt(150, 50);
-	punkty.add_punkt(200, 50);
-	punkty.add_punkt(250, 50);
-	punkty.add_punkt(350, 50);
-	punkty.add_punkt(400, 50);
-	punkty.add_punkt(450, 50);
-	punkty.add_punkt(500, 50);
-	punkty.add_punkt(550, 50);
-	punkty.add_punkt(690,50);
-	punkty.add_punkt(740, 50);
-	punkty.add_punkt(790, 50);
-	punkty.add_punkt(840, 50);
-	punkty.add_punkt(890,50);
-	punkty.add_punkt(990, 50);
-	punkty.add_punkt(1040, 50);
-	punkty.add_punkt(1090, 50);
-	punkty.add_punkt(1140, 50);
-	punkty.add_punkt(1190, 50);
-
-	//2 wiersz
-	punkty.add_punkt(50, 100);
-	punkty.add_punkt(250, 100);
-	punkty.add_punkt(350, 100);
-	punkty.add_punkt(550, 100);
-	punkty.add_punkt(690, 100);
-	punkty.add_punkt(890, 100);
-	punkty.add_punkt(990, 100);
-	punkty.add_punkt(1190, 100);
-
-
-	//3 wiersz
-	punkty.add_punkt(50, 150);
-	punkty.add_punkt(150, 150);
-	punkty.add_punkt(200, 150);
-	punkty.add_punkt(250, 150);
-	punkty.add_punkt(300, 150);
-	punkty.add_punkt(350, 150);
-	punkty.add_punkt(400, 150);
-	punkty.add_punkt(450, 150);
-	punkty.add_punkt(500, 150);
-	punkty.add_punkt(550, 150);
-	punkty.add_punkt(620, 150);
-	punkty.add_punkt(690, 150);
-	punkty.add_punkt(790, 150);
-	punkty.add_punkt(840, 150);
-	punkty.add_punkt(890, 150);
-	punkty.add_punkt(940, 150);
-	punkty.add_punkt(990, 150);
-	punkty.add_punkt(1040, 150);
-	punkty.add_punkt(1090, 150);
-	punkty.add_punkt(1190, 150);
-
-	//4 wiersz
-	punkty.add_punkt(50, 200);
-	punkty.add_punkt(150, 200);
-	punkty.add_punkt(250, 200);
-	punkty.add_punkt(350, 200);
-	punkty.add_punkt(450, 200);
-	punkty.add_punkt(550, 200);
-	punkty.add_punkt(690, 200);
-	punkty.add_punkt(790, 200);
-	punkty.add_punkt(890, 200);
-	punkty.add_punkt(1090, 200);
-	punkty.add_punkt(1190, 200);
-	
-	//5 wiersz
-	punkty.add_punkt(50, 250);
-	punkty.add_punkt(100, 250);
-	punkty.add_punkt(150, 250);
-	punkty.add_punkt(250, 250);
-	punkty.add_punkt(350, 250);
-	punkty.add_punkt(400, 250);
-	punkty.add_punkt(450, 250);
-	punkty.add_punkt(550, 250);
-	punkty.add_punkt(690, 250);
-	punkty.add_punkt(740, 250);
-	punkty.add_punkt(790, 250);
-	punkty.add_punkt(840, 250);
-	punkty.add_punkt(890, 250);
-	punkty.add_punkt(940, 250);
-	punkty.add_punkt(990, 250);
-	punkty.add_punkt(1090, 250);
-	punkty.add_punkt(1140, 250);
-	punkty.add_punkt(1190, 250);
-
-	//6 wiersz
-	punkty.add_punkt(250, 300);
-	punkty.add_punkt(350, 300);
-	punkty.add_punkt(550, 300);
-	punkty.add_punkt(620, 300);
-	punkty.add_punkt(690, 300);
-	punkty.add_punkt(790, 300);
-	punkty.add_punkt(990, 300);
-	punkty.add_punkt(1190, 300);
-
-	//7wiersz
-	punkty.add_punkt(50, 350);
-	punkty.add_punkt(100, 350);
-	punkty.add_punkt(150, 350);
-	punkty.add_punkt(200, 350);
-	punkty.add_punkt(250, 350);
-	punkty.add_punkt(350, 350);
-	punkty.add_punkt(400, 350);
-	punkty.add_punkt(450, 350);
-	punkty.add_punkt(550, 350);
-	punkty.add_punkt(690, 350);
-	punkty.add_punkt(790, 350);
-	punkty.add_punkt(840, 350);
-	punkty.add_punkt(890, 350);
-	punkty.add_punkt(990, 350);
-	punkty.add_punkt(1040, 350);
-	punkty.add_punkt(1090, 350);
-	punkty.add_punkt(1140, 350);
-	punkty.add_punkt(1190, 350);
-
-	//8 wiersz
-	punkty.add_punkt(50, 400);
-	punkty.add_punkt(250, 400);
-	punkty.add_punkt(450, 400);
-	punkty.add_punkt(550, 400);
-	punkty.add_punkt(620, 400);
-	punkty.add_punkt(690, 400);
-	punkty.add_punkt(890, 400);
-	punkty.add_punkt(990, 400);
-	
-	//9 wiersz
-	punkty.add_punkt(50, 450);
-	punkty.add_punkt(100, 450);
-	punkty.add_punkt(150, 450);
-	punkty.add_punkt(250, 450);
-	punkty.add_punkt(300, 450);
-	punkty.add_punkt(350, 450);
-	punkty.add_punkt(400, 450);
-	punkty.add_punkt(450, 450);
-	punkty.add_punkt(500, 450);
-	punkty.add_punkt(550, 450);
-	punkty.add_punkt(690, 450);
-	punkty.add_punkt(790, 450);
-	punkty.add_punkt(840, 450);
-	punkty.add_punkt(890, 450);
-	punkty.add_punkt(990, 450);
-	punkty.add_punkt(1090, 450);
-	punkty.add_punkt(1140, 450);
-	punkty.add_punkt(1190, 450);
-	//10 wiersz
-	punkty.add_punkt(50, 500);
-	punkty.add_punkt(150, 500);
-	punkty.add_punkt(350, 500);
-	punkty.add_punkt(450, 500);
-	punkty.add_punkt(550, 500);
-	punkty.add_punkt(690, 500);
-	punkty.add_punkt(790, 500);
-	punkty.add_punkt(890, 500);
-	punkty.add_punkt(990, 500);
-	punkty.add_punkt(1090, 500);
-	punkty.add_punkt(1190, 500);
-	
-	//11 wiersz
-	punkty.add_punkt(50, 550);
-	punkty.add_punkt(150, 550);
-	punkty.add_punkt(200, 550);
-	punkty.add_punkt(250, 550);
-	punkty.add_punkt(300, 550);
-	punkty.add_punkt(350, 550);
-	punkty.add_punkt(400, 550);
-	punkty.add_punkt(450, 550);
-	punkty.add_punkt(550, 550);
-	punkty.add_punkt(620, 550);
-	punkty.add_punkt(690, 550);
-	punkty.add_punkt(740, 550);
-	punkty.add_punkt(790, 550);
-	punkty.add_punkt(840, 550);
-	punkty.add_punkt(890, 550);
-	punkty.add_punkt(940, 550);
-	punkty.add_punkt(990, 550);
-	punkty.add_punkt(1040, 550);
-	punkty.add_punkt(1090, 550);
-	punkty.add_punkt(1190, 550);
-
-	//12wiersz
-	punkty.add_punkt(50, 600);
-	punkty.add_punkt(250, 600);
-	punkty.add_punkt(350, 600);
-	punkty.add_punkt(550, 600);
-	punkty.add_punkt(690, 600);
-	punkty.add_punkt(890, 600);
-	punkty.add_punkt(990, 600);
-	punkty.add_punkt(1190, 600);
-
-	//13 wiersz
-	punkty.add_punkt(100, 650);
-	punkty.add_punkt(150, 650);
-	punkty.add_punkt(200, 650);
-	punkty.add_punkt(250, 650);
-	punkty.add_punkt(350, 650);
-	punkty.add_punkt(400, 650);
-	punkty.add_punkt(450, 650);
-	punkty.add_punkt(500, 650);
-	punkty.add_punkt(550, 650);
-	punkty.add_punkt(690, 650);
-	punkty.add_punkt(740, 650);
-	punkty.add_punkt(790, 650);
-	punkty.add_punkt(840, 650);
-	punkty.add_punkt(890, 650);
-	punkty.add_punkt(990, 650);
-	punkty.add_punkt(1040, 650);
-	punkty.add_punkt(1090, 650);
-	punkty.add_punkt(1140, 650);
-	punkty.add_punkt(1190, 650);
+	map2(labirynth,punkty);
+	//map3(labirynth);
 
 	vector<Vector2f> ghostStartingPositions = {
 		{40, 40},{1180, 40},{40, 640},{1180, 640},{40, 40}
@@ -1216,13 +994,12 @@ int main() {
 
 		// Ruch PacMana
 		p.move();
-		p.handle_collision_with_wall(labirynth); 
+		p.handle_collision_with_wall(labirynth);
 		if (punkty.check_collision(p.get_bounding_box())) {
 			punkty.remove_punkt(p.get_bounding_box()); // Usuwamy punkty, które pacman zje
 		}
 		/*points.checkCollisionWithPacman(p);*/
 
-	
 		// Ruch duszków z uwzglêdnieniem kolizji z labiryntem
 		for (const auto& wall : labirynth.get_walls()) {
 			if (wall.check_collision(g.get_bounding_box())) g.change_direction();
@@ -1240,8 +1017,9 @@ int main() {
 
 		// Rysowanie
 		window.clear();
-		labirynth.draw(window);
 		punkty.draw(window);
+		labirynth.draw(window);
+		
 		/*points.draw(window);*/
 		g.draw(window);
 		g1.draw(window);
@@ -1251,17 +1029,16 @@ int main() {
 		p.draw(window);
 		window.display();
 	}
-
 	return 0;
 }
 
-void map1(Labirynth& l)
+void map1(labirynth& l)
 {
 	//ramki
-	l.add_wall(0, 0, 1260, 30); // Œciana pozioma gorna
-	l.add_wall(0, 30, 30, 660); // Œciana pionowa lewa
-	l.add_wall(0, 690, 1260, 30); // Œciana pozioma dolna
-	l.add_wall(1230, 30, 30, 660); // Œciana pionowa prawa
+	l.add_wall(0, 0, 1260, 30); // sciana pozioma gorna
+	l.add_wall(0, 30, 30, 660); // sciana pionowa lewa
+	l.add_wall(0, 690, 1260, 30); // sciana pozioma dolna
+	l.add_wall(1230, 30, 30, 660); // sciana pionowa prawa
 
 	//4 rogi
 	//lewy gora
@@ -1310,15 +1087,22 @@ void map1(Labirynth& l)
 	l.add_wall(660, 460, 80, 30);//poziomy dol
 }
 
-void map2(Labirynth& l)
-{	//ramki
-	l.add_wall(0, 0, 1260, 20); // Œciana pozioma gorna
-	l.add_wall(0, 20, 20, 680); // Œciana pionowa lewa
-	l.add_wall(0, 700, 1260, 20); // Œciana pozioma dolna
-	l.add_wall(1240, 20, 20, 680); // Œciana pionowa prawa
+void map2(labirynth& l, punkty& punkty)
+{
+	fill_with_punkty(punkty, 50, 50, 11,13, 50);
+	fill_with_punkty(punkty, 690, 50, 11,13, 50);
+	fill_with_punkty(punkty, 620, 150, 1, 2, 150);
+	fill_with_punkty(punkty, 620, 400, 1, 2, 150);
+
+	//ramki
+
+	l.add_wall(0, 0, 1260, 20); // sciana pozioma gorna
+	l.add_wall(0, 20, 20, 680); // sciana pionowa lewa
+	l.add_wall(0, 700, 1260, 20); // sciana pozioma dolna
+	l.add_wall(1240, 20, 20, 680); // sciana pionowa prawa
 	///lewa strona
 	l.add_wall(100, 600, 120, 20);//poziomy
-	l.add_wall(100, 520, 20, 80);//pionowy
+	l.add_wall(100, 500, 20, 120);//pionowy
 
 	l.add_wall(300, 600, 20, 100);//pionowy
 
@@ -1328,7 +1112,7 @@ void map2(Labirynth& l)
 
 	l.add_wall(200, 500, 120, 20);//poziomy cienki
 	l.add_wall(200, 400, 20, 100);//pionowy 
-	l.add_wall(100, 400, 100, 40);//poziomy gruby
+	l.add_wall(100, 400, 100, 20);//poziomy gruby
 
 	l.add_wall(300, 400, 120, 20);//poziomy lewy
 	l.add_wall(300, 200, 20, 200);//pionowy lewy
@@ -1336,9 +1120,11 @@ void map2(Labirynth& l)
 	l.add_wall(400, 300, 100, 20);//poziomy prawy
 	l.add_wall(400, 200, 20, 20);//kwadrat
 
-	l.add_wall(20, 280, 200, 40);//gruby poziomy
-	l.add_wall(200, 200, 20, 80);//pionowy dolny
-	l.add_wall(100, 100, 20, 100);//pionowy gorny
+	l.add_wall(20, 300, 200, 20);//gruby poziomy
+	l.add_wall(200, 200, 20, 100);//pionowy dolny
+
+	l.add_wall(100, 100, 20, 120);//pionowy gorny
+
 	l.add_wall(120, 100, 100, 20);//poziomy gorny
 
 	l.add_wall(300, 20, 20, 100);//pionowy samotnik
@@ -1346,9 +1132,9 @@ void map2(Labirynth& l)
 
 	//srodek
 	l.add_wall(600, 20, 60, 100);//gorny prostokat
-	l.add_wall(600, 200, 60, 60);//gorny kwadrat
-	l.add_wall(600, 340, 60, 40);//srodkowy
-	l.add_wall(600, 460, 60, 60);//dolny kwadrat
+	l.add_wall(600, 200, 60, 70);//gorny kwadrat 
+	l.add_wall(600, 350, 60, 20);//srodkowy 
+	l.add_wall(600, 450, 60, 70);//dolny kwadrat
 	l.add_wall(600, 600, 60, 100);//dolny prostokat
 
 
@@ -1359,11 +1145,11 @@ void map2(Labirynth& l)
 
 	l.add_wall(940, 20, 20, 100);//pionowy samotny
 	l.add_wall(1040, 100, 120, 20);//poziomy rog
-	l.add_wall(1140, 120, 20, 80);//pionowy rog
+	l.add_wall(1140, 110, 20, 110);//pionowy rog
 
 	l.add_wall(940, 200, 120, 20);//poziomy
 	l.add_wall(1040, 220, 20, 100);//pionowy cienki
-	l.add_wall(1060, 280, 100, 40);//poziomy gruby
+	l.add_wall(1060, 300, 100, 20);//poziomy gruby
 
 	l.add_wall(740, 300, 20, 220);//pionowy
 	l.add_wall(760, 400, 100, 20);//poziomy
@@ -1371,21 +1157,21 @@ void map2(Labirynth& l)
 	l.add_wall(940, 320, 20, 200);//poziomy
 	l.add_wall(840, 500, 20, 20);//kwadrat
 
-	l.add_wall(1040, 400, 200, 40);//gruby ze sciany
-	l.add_wall(1040, 440, 20, 80);//pionowy
+	l.add_wall(1040, 400, 200, 20);//gruby ze sciany
+	l.add_wall(1040, 410, 20, 110);//pionowy
 
 	l.add_wall(740, 600, 120, 20);//poziomy samotnik
 	l.add_wall(940, 600, 20, 100);//pionowy samotnik
 	l.add_wall(1040, 600, 120, 20);//poziomy
-	l.add_wall(1140, 520, 20, 80);
+	l.add_wall(1140, 500, 20, 120);
 }
-void map3(Labirynth& l)
+void map3(labirynth& l)
 {
 	//ramki
-	l.add_wall(0, 0, 1260, 10); // Œciana pozioma gorna
-	l.add_wall(0, 10, 10, 700); // Œciana pionowa lewa
-	l.add_wall(0, 710, 1260, 10); // Œciana pozioma dolna
-	l.add_wall(1250, 10, 10, 700); // Œciana pionowa prawa
+	l.add_wall(0, 0, 1260, 10); // sciana pozioma gorna
+	l.add_wall(0, 10, 10, 700); // sciana pionowa lewa
+	l.add_wall(0, 710, 1260, 10); // sciana pozioma dolna
+	l.add_wall(1250, 10, 10, 700); // sciana pionowa prawa
 
 	//lewy rog
 	l.add_wall(10, 510, 80, 20);//maly bolec ze sciany poziomy
@@ -1506,7 +1292,7 @@ void map3(Labirynth& l)
 //		return false;
 //	}
 //
-//	// Rysuje wszystkie œciany w labiryncie
+//	// Rysuje wszystkie sciany w labiryncie
 //	void draw(RenderWindow& window) const {
 //		for (const auto& wall : walls) {
 //			wall.draw(window);
@@ -1642,7 +1428,7 @@ void map3(Labirynth& l)
 //		bool down;
 //	};
 //	movement currentDirection;
-//	bool isBlocked;  // Flaga informuj¹ca, czy duszek jest zablokowany przez œcianê
+//	bool isBlocked;  // Flaga informuj¹ca, czy duszek jest zablokowany przez scianê
 //
 //public:
 //	ghost(const int x, const int y, const Color color)
@@ -1650,7 +1436,7 @@ void map3(Labirynth& l)
 //		p.x = x;
 //		p.y = y;
 //		color1 = color;
-//		currentDirection = { false, true, false, false }; // Domyœlny kierunek: w prawo
+//		currentDirection = { false, true, false, false }; // Domyslny kierunek: w prawo
 //		isBlocked = false;  // Pocz¹tkowo duszek nie jest zablokowany
 //	}
 //
@@ -1690,7 +1476,7 @@ void map3(Labirynth& l)
 //		float dy = pacman.get_position().y - p.y;
 //
 //		// Normalizacja wektora kierunku
-//		float distance = sqrt(dx * dx + dy * dy); // Odleg³oœæ do PacMana
+//		float distance = sqrt(dx * dx + dy * dy); // Odleg³osæ do PacMana
 //		dx /= distance;
 //		dy /= distance;
 //
@@ -1734,7 +1520,7 @@ void map3(Labirynth& l)
 //			p.y += SPEED / 2.0; // Ruch w dó³
 //		}
 //		else {
-//			// Jeœli napotka œcianê w wybranym kierunku, spróbuj innego
+//			// Jesli napotka scianê w wybranym kierunku, spróbuj innego
 //			if (currentDirection.left && wall_collision_left(labirynth)) {
 //				// SprawdŸ inne kierunki
 //				if (!wall_collision_up(labirynth)) {
@@ -1870,7 +1656,7 @@ void map3(Labirynth& l)
 //			for (float x = 0; x < WIDTH; x += 40.5) {
 //				FloatRect pointBounds(x + 10, y + 10, 20, 20); // Obszar punktu
 //
-//				// SprawdŸ, czy punkt nie koliduje ze œcianami
+//				// SprawdŸ, czy punkt nie koliduje ze scianami
 //				bool collidesWithWall = false;
 //				for (const auto& wall : labirynth.get_walls()) {
 //					if (wall.check_collision(pointBounds)) {
@@ -1883,7 +1669,7 @@ void map3(Labirynth& l)
 //
 //
 //				if (!collidesWithWall) {
-//					CircleShape point(10); // Promieñ 10 = œrednica 20
+//					CircleShape point(10); // Promieñ 10 = srednica 20
 //					point.setFillColor(Color::White);
 //					point.setPosition(x, y);
 //					points.push_back(point);
@@ -1893,7 +1679,7 @@ void map3(Labirynth& l)
 //	}
 //
 //	void checkCollisionWithPacman(const pacman& p) {
-//		FloatRect pacmanBounds(p.get_position().x, p.get_position().y, 30, 30); // PacMan ma œrednicê 40
+//		FloatRect pacmanBounds(p.get_position().x, p.get_position().y, 30, 30); // PacMan ma srednicê 40
 //
 //		for (auto it = points.begin(); it != points.end();) {
 //			if (it->getGlobalBounds().intersects(pacmanBounds)) {
@@ -1997,10 +1783,10 @@ void map3(Labirynth& l)
 //}
 //void map4(Labirynth& l)
 //{
-//	l.add_wall(0, 0, 760, 40); // Œciana pozioma gorna
-//	l.add_wall(0, 40, 40, 800); // Œciana pionowa lewa
-//	l.add_wall(0, 840, 760, 40); // Œciana pozioma dolna
-//	l.add_wall(720, 40, 40, 800); // Œciana pionowa prawa
+//	l.add_wall(0, 0, 760, 40); // sciana pozioma gorna
+//	l.add_wall(0, 40, 40, 800); // sciana pionowa lewa
+//	l.add_wall(0, 840, 760, 40); // sciana pozioma dolna
+//	l.add_wall(720, 40, 40, 800); // sciana pionowa prawa
 //
 //	l.add_wall(80, 80, 80, 80);
 //	l.add_wall(200, 80, 120, 80);
