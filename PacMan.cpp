@@ -143,7 +143,7 @@
 //				if (m.up) p.y += speed;
 //				if (m.down) p.y -= speed;
 //
-//				break; // Tylko jedna kolizja jest mo¿liwa na raz
+//				break; // Tylko jedna kolizja jest mozliwa na raz
 //			}
 //		}
 //	}
@@ -298,7 +298,7 @@
 //		p.move();
 //		p.handle_collision_with_wall(labirynth);
 //
-//		// Ruch duszków z uwzglêdnieniem kolizji z labiryntem
+//		// Ruch duszkow z uwzglednieniem kolizji z labiryntem
 //		for (const auto& wall : labirynth.get_walls()) {
 //			if (wall.check_collision(g.get_bounding_box())) g.change_direction();
 //			if (wall.check_collision(g1.get_bounding_box())) g1.change_direction();
@@ -307,8 +307,8 @@
 //			if (wall.check_collision(g4.get_bounding_box())) g4.change_direction();
 //		}
 //
-//		g.move(p, wall(0, 0, 0, 0));  // Duszki u¿ywaj¹ swojej logiki
-//		g1.move(p, wall(0, 0, 0, 0)); // U¿ycie pustego walla, bo logika jest w g³ównym
+//		g.move(p, wall(0, 0, 0, 0));  // Duszki uzywaja swojej logiki
+//		g1.move(p, wall(0, 0, 0, 0)); // Uzycie pustego walla, bo logika jest w glownym
 //		g2.move(p, wall(0, 0, 0, 0));
 //		g3.move(p, wall(0, 0, 0, 0));
 //		g4.move(p, wall(0, 0, 0, 0));
@@ -701,7 +701,7 @@ public:
 				if (m.up) p.y += speed;
 				if (m.down) p.y -= speed;
 
-				break; // Tylko jedna kolizja jest mo¿liwa na raz
+				break; // Tylko jedna kolizja jest mozliwa na raz
 			}
 		}
 	}
@@ -831,7 +831,7 @@ public:
 	punkt(const float x, const float y, const float radius = 10.f) {
 		shape.setPosition(x, y);
 		shape.setRadius(radius);
-		shape.setFillColor(Color::White); // Mo¿esz ustawiæ dowolny kolor
+		shape.setFillColor(Color::White); // Mozesz ustawiæ dowolny kolor
 	}
 	// Zwraca bounding box punktu
 	FloatRect get_bounding_box() const {
@@ -845,14 +845,14 @@ public:
 
 class punkty {
 private:
-	std::vector<punkt> points; // Przechowywanie punktów
+	std::vector<punkt> points; // Przechowywanie punktow
 public:
 	// Dodaje punkt do wektora
 	void add_punkt(float x, float y, float radius = 10.f) {
 		points.emplace_back(x, y, radius);
 	}
 
-	// Sprawdza, czy pacman koliduje z któryms z punktów
+	// Sprawdza, czy pacman koliduje z ktoryms z punktow
 	bool check_collision(const FloatRect& pacman_bounds) {
 		for (auto& point : points) 
 			if (pacman_bounds.intersects(point.get_bounding_box())) 
@@ -872,7 +872,7 @@ public:
 				[&](const punkt& point) {return pacman_bounds.intersects(point.get_bounding_box());}),points.end());
 	}
 
-	// Zwraca wektor punktów
+	// Zwraca wektor punktow
 	const std::vector<punkt>& get_punkty() const {
 		return points;
 	}
@@ -887,7 +887,7 @@ public:
 //	GamePoints(const Labirynth& labirynth, const vector<Vector2f>& ghostStartingPositions) {
 //		score = 0;
 //
-//		// Generowanie punktów w siatce 40x40
+//		// Generowanie punktow w siatce 40x40
 //		for (float y = 0; y < HEIGHT; y += 40.5) {
 //			for (float x = 0; x < WIDTH; x += 40.5) {
 //				FloatRect pointBounds(x + 10, y + 10 , 20, 20); // Obszar punktu
@@ -901,7 +901,7 @@ public:
 //					}
 //				}
 //
-//				// SprawdŸ, czy punkt nie jest w strefie startowej duszków
+//				// SprawdŸ, czy punkt nie jest w strefie startowej duszkow
 //			
 //
 //				if (!collidesWithWall) {
@@ -915,12 +915,12 @@ public:
 //	}
 //
 //	void checkCollisionWithPacman(const pacman& p) {
-//		FloatRect pacmanBounds(p.get_position().x, p.get_position().y, 30, 30); // PacMan ma srednicê 40
+//		FloatRect pacmanBounds(p.get_position().x, p.get_position().y, 30, 30); // PacMan ma srednice 40
 //
 //		for (auto it = points.begin(); it != points.end();) {
 //			if (it->getGlobalBounds().intersects(pacmanBounds)) {
 //				it = points.erase(it); // Usuñ punkt
-//				score++; // Zwiêksz liczbê punktów
+//				score++; // Zwieksz liczbe punktow
 //			}
 //			else {
 //				++it;
@@ -933,10 +933,10 @@ public:
 //			window.draw(point);
 //		}
 //
-//		// Rysowanie licznika punktów
+//		// Rysowanie licznika punktow
 //		Font font;
 //		if (!font.loadFromFile("arial.ttf")) {
-//			cerr << "Nie mo¿na za³adowaæ czcionki!\n";
+//			cerr << "Nie mozna zaladowaæ czcionki!\n";
 //			return;
 //		}
 //
@@ -949,7 +949,6 @@ public:
 //		window.draw(scoreText);
 //	}
 //};
-
 
 void map1(labirynth& l);
 void map2(labirynth& l,punkty &punkty);
@@ -996,11 +995,11 @@ int main() {
 		p.move();
 		p.handle_collision_with_wall(labirynth);
 		if (punkty.check_collision(p.get_bounding_box())) {
-			punkty.remove_punkt(p.get_bounding_box()); // Usuwamy punkty, które pacman zje
+			punkty.remove_punkt(p.get_bounding_box()); // Usuwamy punkty, ktore pacman zje
 		}
 		/*points.checkCollisionWithPacman(p);*/
 
-		// Ruch duszków z uwzglêdnieniem kolizji z labiryntem
+		// Ruch duszkow z uwzglednieniem kolizji z labiryntem
 		for (const auto& wall : labirynth.get_walls()) {
 			if (wall.check_collision(g.get_bounding_box())) g.change_direction();
 			if (wall.check_collision(g1.get_bounding_box())) g1.change_direction();
@@ -1009,8 +1008,8 @@ int main() {
 			if (wall.check_collision(g4.get_bounding_box())) g4.change_direction();
 		}
 
-		g.move(p, wall(0, 0, 0, 0));  // Duszki u¿ywaj¹ swojej logiki
-		g1.move(p, wall(0, 0, 0, 0)); // U¿ycie pustego walla, bo logika jest w g³ównym
+		g.move(p, wall(0, 0, 0, 0));  // Duszki uzywaja swojej logiki
+		g1.move(p, wall(0, 0, 0, 0)); // Uzycie pustego walla, bo logika jest w glownym
 		g2.move(p, wall(0, 0, 0, 0));
 		g3.move(p, wall(0, 0, 0, 0));
 		g4.move(p, wall(0, 0, 0, 0));
@@ -1165,6 +1164,7 @@ void map2(labirynth& l, punkty& punkty)
 	l.add_wall(1040, 600, 120, 20);//poziomy
 	l.add_wall(1140, 500, 20, 120);
 }
+
 void map3(labirynth& l)
 {
 	//ramki
@@ -1238,7 +1238,6 @@ void map3(labirynth& l)
 	l.add_wall(1070, 310, 100, 20);//prawy dol
 	l.add_wall(980, 170, 100, 80);
 }
-
 
 //#include <SFML/Graphics.hpp>
 //#include <SFML/Window.hpp>
@@ -1385,7 +1384,7 @@ void map3(labirynth& l)
 //				if (m.up) p.y += speed;
 //				if (m.down) p.y -= speed;
 //
-//				break; // Tylko jedna kolizja jest mo¿liwa na raz
+//				break; // Tylko jedna kolizja jest mozliwa na raz
 //			}
 //		}
 //	}
@@ -1428,7 +1427,7 @@ void map3(labirynth& l)
 //		bool down;
 //	};
 //	movement currentDirection;
-//	bool isBlocked;  // Flaga informuj¹ca, czy duszek jest zablokowany przez scianê
+//	bool isBlocked;  // Flaga informujaca, czy duszek jest zablokowany przez sciane
 //
 //public:
 //	ghost(const int x, const int y, const Color color)
@@ -1437,10 +1436,10 @@ void map3(labirynth& l)
 //		p.y = y;
 //		color1 = color;
 //		currentDirection = { false, true, false, false }; // Domyslny kierunek: w prawo
-//		isBlocked = false;  // Pocz¹tkowo duszek nie jest zablokowany
+//		isBlocked = false;  // Poczatkowo duszek nie jest zablokowany
 //	}
 //
-//	// Funkcja zmieniaj¹ca kierunek o 90 stopni zgodnie z ruchem wskazówek zegara
+//	// Funkcja zmieniajaca kierunek o 90 stopni zgodnie z ruchem wskazowek zegara
 //	void change_direction() {
 //		if (currentDirection.left) {
 //			currentDirection.left = false;
@@ -1468,20 +1467,20 @@ void map3(labirynth& l)
 //		}
 //	}
 //
-//	// Funkcja sprawdzaj¹ca, czy duszek ma zbli¿yæ siê do PacMana
+//	// Funkcja sprawdzajaca, czy duszek ma zblizyæ sie do PacMana
 //	void move_towards_pacman(const pacman& pacman, const Labirynth& labirynth)
 //	{
-//		// Obliczanie ró¿nicy pozycji w obu osiach
+//		// Obliczanie roznicy pozycji w obu osiach
 //		float dx = pacman.get_position().x - p.x;
 //		float dy = pacman.get_position().y - p.y;
 //
 //		// Normalizacja wektora kierunku
-//		float distance = sqrt(dx * dx + dy * dy); // Odleg³osæ do PacMana
+//		float distance = sqrt(dx * dx + dy * dy); // Odleglosæ do PacMana
 //		dx /= distance;
 //		dy /= distance;
 //
 //		// Zmiana kierunku na podstawie PacMana
-//		if (abs(dx) > abs(dy)) { // Je¿eli ruch w osi X jest wiêkszy
+//		if (abs(dx) > abs(dy)) { // Jezeli ruch w osi X jest wiekszy
 //			if (dx > 0) {
 //				currentDirection.left = false;
 //				currentDirection.right = true;
@@ -1493,7 +1492,7 @@ void map3(labirynth& l)
 //			currentDirection.up = false;
 //			currentDirection.down = false;
 //		}
-//		else { // Je¿eli ruch w osi Y jest wiêkszy
+//		else { // Jezeli ruch w osi Y jest wiekszy
 //			if (dy > 0) {
 //				currentDirection.down = true;
 //				currentDirection.up = false;
@@ -1514,20 +1513,20 @@ void map3(labirynth& l)
 //			p.x += SPEED / 2.0; // Ruch w prawo
 //		}
 //		else if (currentDirection.up && !wall_collision_up(labirynth)) {
-//			p.y -= SPEED / 2.0; // Ruch w górê
+//			p.y -= SPEED / 2.0; // Ruch w gore
 //		}
 //		else if (currentDirection.down && !wall_collision_down(labirynth)) {
-//			p.y += SPEED / 2.0; // Ruch w dó³
+//			p.y += SPEED / 2.0; // Ruch w dol
 //		}
 //		else {
-//			// Jesli napotka scianê w wybranym kierunku, spróbuj innego
+//			// Jesli napotka sciane w wybranym kierunku, sprobuj innego
 //			if (currentDirection.left && wall_collision_left(labirynth)) {
 //				// SprawdŸ inne kierunki
 //				if (!wall_collision_up(labirynth)) {
-//					p.y -= SPEED / 2.0; // Ruch w górê
+//					p.y -= SPEED / 2.0; // Ruch w gore
 //				}
 //				else if (!wall_collision_down(labirynth)) {
-//					p.y += SPEED / 2.0; // Ruch w dó³
+//					p.y += SPEED / 2.0; // Ruch w dol
 //				}
 //				else if (!wall_collision_right(labirynth)) {
 //					p.x += SPEED / 2.0; // Ruch w prawo
@@ -1536,10 +1535,10 @@ void map3(labirynth& l)
 //			else if (currentDirection.right && wall_collision_right(labirynth)) {
 //				// SprawdŸ inne kierunki
 //				if (!wall_collision_up(labirynth)) {
-//					p.y -= SPEED / 2.0; // Ruch w górê
+//					p.y -= SPEED / 2.0; // Ruch w gore
 //				}
 //				else if (!wall_collision_down(labirynth)) {
-//					p.y += SPEED / 2.0; // Ruch w dó³
+//					p.y += SPEED / 2.0; // Ruch w dol
 //				}
 //				else if (!wall_collision_left(labirynth)) {
 //					p.x -= SPEED / 2.0; // Ruch w lewo
@@ -1554,7 +1553,7 @@ void map3(labirynth& l)
 //					p.x += SPEED / 2.0; // Ruch w prawo
 //				}
 //				else if (!wall_collision_down(labirynth)) {
-//					p.y += SPEED / 2.0; // Ruch w dó³
+//					p.y += SPEED / 2.0; // Ruch w dol
 //				}
 //			}
 //			else if (currentDirection.down && wall_collision_down(labirynth)) {
@@ -1566,7 +1565,7 @@ void map3(labirynth& l)
 //					p.x += SPEED / 2.0; // Ruch w prawo
 //				}
 //				else if (!wall_collision_up(labirynth)) {
-//					p.y -= SPEED / 2.0; // Ruch w górê
+//					p.y -= SPEED / 2.0; // Ruch w gore
 //				}
 //			}
 //		}
@@ -1598,7 +1597,7 @@ void map3(labirynth& l)
 //		return false;
 //	}
 //
-//	// Sprawdzanie kolizji w górê
+//	// Sprawdzanie kolizji w gore
 //	bool wall_collision_up(const Labirynth& labirynth) {
 //		FloatRect ghostBounds = get_bounding_box();
 //		ghostBounds.top -= SPEED / 2.0;
@@ -1608,7 +1607,7 @@ void map3(labirynth& l)
 //		return false;
 //	}
 //
-//	// Sprawdzanie kolizji w dó³
+//	// Sprawdzanie kolizji w dol
 //	bool wall_collision_down(const Labirynth& labirynth) {
 //		FloatRect ghostBounds = get_bounding_box();
 //		ghostBounds.top += SPEED / 2.0;
@@ -1651,7 +1650,7 @@ void map3(labirynth& l)
 //	GamePoints(const Labirynth& labirynth, const vector<Vector2f>& ghostStartingPositions) {
 //		score = 0;
 //
-//		// Generowanie punktów w siatce 40x40
+//		// Generowanie punktow w siatce 40x40
 //		for (float y = 0; y < HEIGHT; y += 40.5) {
 //			for (float x = 0; x < WIDTH; x += 40.5) {
 //				FloatRect pointBounds(x + 10, y + 10, 20, 20); // Obszar punktu
@@ -1665,7 +1664,7 @@ void map3(labirynth& l)
 //					}
 //				}
 //
-//				// SprawdŸ, czy punkt nie jest w strefie startowej duszków
+//				// SprawdŸ, czy punkt nie jest w strefie startowej duszkow
 //
 //
 //				if (!collidesWithWall) {
@@ -1679,12 +1678,12 @@ void map3(labirynth& l)
 //	}
 //
 //	void checkCollisionWithPacman(const pacman& p) {
-//		FloatRect pacmanBounds(p.get_position().x, p.get_position().y, 30, 30); // PacMan ma srednicê 40
+//		FloatRect pacmanBounds(p.get_position().x, p.get_position().y, 30, 30); // PacMan ma srednice 40
 //
 //		for (auto it = points.begin(); it != points.end();) {
 //			if (it->getGlobalBounds().intersects(pacmanBounds)) {
 //				it = points.erase(it); // Usuñ punkt
-//				score++; // Zwiêksz liczbê punktów
+//				score++; // Zwieksz liczbe punktow
 //			}
 //			else {
 //				++it;
@@ -1697,10 +1696,10 @@ void map3(labirynth& l)
 //			window.draw(point);
 //		}
 //
-//		// Rysowanie licznika punktów
+//		// Rysowanie licznika punktow
 //		Font font;
 //		if (!font.loadFromFile("arial.ttf")) {
-//			cerr << "Nie mo¿na za³adowaæ czcionki!\n";
+//			cerr << "Nie mozna zaladowaæ czcionki!\n";
 //			return;
 //		}
 //
@@ -1751,7 +1750,7 @@ void map3(labirynth& l)
 //		points.checkCollisionWithPacman(p);
 //
 //
-//		// Ruch duszków z uwzglêdnieniem kolizji z labiryntem
+//		// Ruch duszkow z uwzglednieniem kolizji z labiryntem
 //		for (const auto& wall : labirynth.get_walls()) {
 //			if (wall.check_collision(g.get_bounding_box())) g.change_direction();
 //			if (wall.check_collision(g1.get_bounding_box())) g1.change_direction();
@@ -1760,8 +1759,8 @@ void map3(labirynth& l)
 //			if (wall.check_collision(g4.get_bounding_box())) g4.change_direction();
 //		}
 //
-//		g.move_towards_pacman(p, labirynth);  // Duszki u¿ywaj¹ swojej logiki
-//		g1.move_towards_pacman(p, labirynth); // U¿ycie pustego walla, bo logika jest w g³ównym
+//		g.move_towards_pacman(p, labirynth);  // Duszki uzywaja swojej logiki
+//		g1.move_towards_pacman(p, labirynth); // Uzycie pustego walla, bo logika jest w glownym
 //		g2.move_towards_pacman(p, labirynth);
 //		g3.move_towards_pacman(p, labirynth);
 //		g4.move_towards_pacman(p, labirynth);
