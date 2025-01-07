@@ -566,7 +566,7 @@
 #include <iostream>
 
 constexpr float SPEED = 0.05;
-constexpr int WIDTH = 1260;
+constexpr int WIDTH = 1270;
 constexpr int HEIGHT = 720;
 using namespace std;
 using namespace sf;
@@ -832,7 +832,7 @@ public:
 	punkt(const float x, const float y, const float radius = 10.f) {
 		shape.setPosition(x, y);
 		shape.setRadius(radius);
-		shape.setFillColor(Color::White); // Mozesz ustawiæ dowolny kolor
+		shape.setFillColor(Color::White); // Mozesz ustawiÃ¦ dowolny kolor
 	}
 	// Zwraca bounding box punktu
 	FloatRect get_bounding_box() const {
@@ -893,7 +893,7 @@ public:
 //			for (float x = 0; x < WIDTH; x += 40.5) {
 //				FloatRect pointBounds(x + 10, y + 10 , 20, 20); // Obszar punktu
 //
-//				// SprawdŸ, czy punkt nie koliduje ze scianami
+//				// SprawdÂŸ, czy punkt nie koliduje ze scianami
 //				bool collidesWithWall = false;
 //				for (const auto& wall : labirynth.get_walls()) {
 //					if (wall.check_collision(pointBounds)) {
@@ -902,11 +902,11 @@ public:
 //					}
 //				}
 //
-//				// SprawdŸ, czy punkt nie jest w strefie startowej duszkow
+//				// SprawdÂŸ, czy punkt nie jest w strefie startowej duszkow
 //			
 //
 //				if (!collidesWithWall) {
-//					CircleShape point(10); // Promieñ 10 = srednica 20
+//					CircleShape point(10); // PromieÃ± 10 = srednica 20
 //					point.setFillColor(Color::White);
 //					point.setPosition(x, y);
 //					points.push_back(point);
@@ -920,7 +920,7 @@ public:
 //
 //		for (auto it = points.begin(); it != points.end();) {
 //			if (it->getGlobalBounds().intersects(pacmanBounds)) {
-//				it = points.erase(it); // Usuñ punkt
+//				it = points.erase(it); // UsuÃ± punkt
 //				score++; // Zwieksz liczbe punktow
 //			}
 //			else {
@@ -937,7 +937,7 @@ public:
 //		// Rysowanie licznika punktow
 //		Font font;
 //		if (!font.loadFromFile("arial.ttf")) {
-//			cerr << "Nie mozna zaladowaæ czcionki!\n";
+//			cerr << "Nie mozna zaladowaÃ¦ czcionki!\n";
 //			return;
 //		}
 //
@@ -951,9 +951,9 @@ public:
 //	}
 //};
 
-void map1(labirynth& l);
+void map1(labirynth& l, punkty& punkty);
 void map2(labirynth& l, punkty& punkty);
-void map3(labirynth& l);
+void map3(labirynth& l, punkty& punkty);
 
 void fill_with_punkty(punkty& punkty, const float x, const float y, const int n, const int m, const float distance) {
 	for (int i = 0; i < n; i++) {
@@ -1113,7 +1113,7 @@ int main() {
 	ghost g4(40, 40, Color::Magenta);
 
 	punkty punkty;
-	labirynth labirynth;
+	labirynth labirynth
 
 	bool is_paused = false;
 	bool quit_confirmation = false;
@@ -1131,13 +1131,13 @@ int main() {
 
 	switch (choice) {
 	case 1:
-		map1(labirynth);
+		map1(labirynth,punkty);
 		break;
 	case 2:
 		map2(labirynth, punkty);
 		break;
 	case 3:
-		map3(labirynth);
+		map3(labirynth,punkty);
 		break;
 	default:
 		window.close();
@@ -1210,60 +1210,63 @@ int main() {
 }
 
 
+void map1(labirynth& l, punkty& punkty)
 
-void map1(labirynth& l)
 {
+	fill_with_punkty(punkty, 50, 50, 24, 13, 50);
+	
 	//ramki
-	l.add_wall(0, 0, 1260, 30); // sciana pozioma gorna
-	l.add_wall(0, 30, 30, 660); // sciana pionowa lewa
-	l.add_wall(0, 690, 1260, 30); // sciana pozioma dolna
-	l.add_wall(1230, 30, 30, 660); // sciana pionowa prawa
-
+	l.add_wall(0, 0, 1270, 20); // sciana pozioma gorna
+	l.add_wall(0, 20, 20, 680); // sciana pionowa lewa
+	l.add_wall(0, 700, 1270, 20); // sciana pozioma dolna
+	l.add_wall(1250, 20, 20, 680); // sciana pionowa prawa
 	//4 rogi
 	//lewy gora
-	l.add_wall(110, 110, 30, 200); //pionowa
-	l.add_wall(140, 110, 80, 30); //pozioma
+	l.add_wall(100, 100, 20, 220); //pionowa
+	l.add_wall(120, 100, 100, 20); //pozioma
 	//lewy dol
-	l.add_wall(110, 410, 30, 200);//pionowa
-	l.add_wall(140, 580, 80, 30);//pozioma
+	l.add_wall(100, 400, 20, 220);//pionowa
+	l.add_wall(120, 600, 100, 20);//pozioma
 	//prawy gora
-	l.add_wall(1120, 110, 30, 200);//pionowa
-	l.add_wall(1040, 110, 80, 30);//pozioma
+	l.add_wall(1150, 100, 20, 220);//pionowa
+	l.add_wall(1050, 100, 100, 20);//pozioma
 
 	//prawy dol
-	l.add_wall(1120, 410, 30, 200); //pionowa
-	l.add_wall(1040, 580, 80, 30); //pozioma
+	l.add_wall(1150, 400, 20, 220); //pionowa
+	l.add_wall(1050, 600, 100, 20); //pozioma
 
 
 	//4 bolce pionowe
-	l.add_wall(300, 30, 30, 110); //lewy gora
-	l.add_wall(930, 30, 30, 110); //prawy gora
-	l.add_wall(300, 580, 30, 110); //lewy dol
-	l.add_wall(930, 580, 30, 110); //prawy dol
+	l.add_wall(300, 20, 20, 100); //lewy gora
+	l.add_wall(950, 20, 20, 100); //prawy gora
+	l.add_wall(300, 600, 20, 100); //lewy dol
+	l.add_wall(950, 600, 20, 100); //prawy dol
 
 	//6 bolce poziome
-	l.add_wall(220, 230, 110, 30); //lewy gorny
-	l.add_wall(220, 345, 190, 30); //lewy srodek
-	l.add_wall(220, 460, 110, 30); //lewy dol
-	l.add_wall(930, 230, 110, 30); //prawy gora
-	l.add_wall(850, 345, 190, 30); //prawy srodek
-	l.add_wall(930, 460, 110, 30); //prawy dol
+	l.add_wall(200, 200, 120, 70); //lewy gorny
+	l.add_wall(200, 350, 200, 20); //lewy srodek
+	l.add_wall(200, 450, 120, 70); //lewy dol
+	l.add_wall(950, 200, 120, 70); //prawy gora
+	l.add_wall(870, 350, 200, 20); //prawy srodek
+	l.add_wall(950, 450, 120, 70); //prawy dol
 
 	//2 dlugie pionowe
-	l.add_wall(410, 230, 30, 260);//lewy
-	l.add_wall(820, 230, 30, 260);//prawy
+	l.add_wall(400, 200, 20, 320);//lewy
+	l.add_wall(850, 200, 20, 320);//prawy
 
 	//2 dlugie poziome
-	l.add_wall(410, 110, 440, 30);//gorny
-	l.add_wall(410, 580, 440, 30);//dolny
+	l.add_wall(400, 100, 470, 20);//gorny
+	l.add_wall(400, 600, 470, 20);//dolny
 
 	//srodek
-	l.add_wall(520, 140, 30, 170);//pionowy gorny
-	l.add_wall(520, 410, 30, 170);//pionowy dolny
-	l.add_wall(630, 230, 30, 260);//pionowy srodek
-	l.add_wall(660, 230, 80, 30);//poziomy gora
-	l.add_wall(660, 345, 80, 30);//poziomy srodek
-	l.add_wall(660, 460, 80, 30);//poziomy dol
+	l.add_wall(500, 120, 20, 200);//pionowy gorny
+	l.add_wall(500, 400, 20, 200);//pionowy dolny
+	l.add_wall(750, 120, 20, 200);
+	l.add_wall(750, 400, 20, 200);
+	l.add_wall(600, 350, 70, 20);
+	l.add_wall(600, 200, 70, 70);
+	l.add_wall(600, 450, 70, 70);
+
 }
 
 void map2(labirynth& l, punkty& punkty)
@@ -1275,10 +1278,10 @@ void map2(labirynth& l, punkty& punkty)
 
 	//ramki
 
-	l.add_wall(0, 0, 1260, 20); // sciana pozioma gorna
+	l.add_wall(0, 0, 1270, 20); // sciana pozioma gorna
 	l.add_wall(0, 20, 20, 680); // sciana pionowa lewa
-	l.add_wall(0, 700, 1260, 20); // sciana pozioma dolna
-	l.add_wall(1240, 20, 20, 680); // sciana pionowa prawa
+	l.add_wall(0, 700, 1270, 20); // sciana pozioma dolna
+	l.add_wall(1240, 20, 30, 680); // sciana pionowa prawa
 	///lewa strona
 	l.add_wall(100, 600, 120, 20);//poziomy
 	l.add_wall(100, 500, 20, 120);//pionowy
@@ -1345,78 +1348,81 @@ void map2(labirynth& l, punkty& punkty)
 	l.add_wall(1140, 500, 20, 120);
 }
 
-void map3(labirynth& l)
+void map3(labirynth& l, punkty& punkty)
 {
+	fill_with_punkty(punkty, 50, 50, 24, 13, 50);
 	//ramki
-	l.add_wall(0, 0, 1260, 10); // sciana pozioma gorna
-	l.add_wall(0, 10, 10, 700); // sciana pionowa lewa
-	l.add_wall(0, 710, 1260, 10); // sciana pozioma dolna
-	l.add_wall(1250, 10, 10, 700); // sciana pionowa prawa
+	l.add_wall(0, 0, 1270, 20); // sciana pozioma gorna
+	l.add_wall(0, 20, 20, 680); // sciana pionowa lewa
+	l.add_wall(0, 700, 1270, 20); // sciana pozioma dolna
+	l.add_wall(1250, 20, 20, 680); // sciana pionowa prawa
 
 	//lewy rog
-	l.add_wall(10, 510, 80, 20);//maly bolec ze sciany poziomy
-	l.add_wall(270, 410, 100, 20);//samotny poziomy
+	l.add_wall(20, 500, 100, 20);//maly bolec ze sciany poziomy
+	l.add_wall(300, 400, 70, 20);//samotny poziomy
 
 	//niepelnosprawne f
-	l.add_wall(90, 610, 280, 20);//poziomy z f
-	l.add_wall(270, 510, 20, 100);//pionowy z f
+	l.add_wall(100, 600, 270, 20);//poziomy z f
+	l.add_wall(300, 500, 20, 100);//pionowy z f
 
 	//odwrocona elka
-	l.add_wall(170, 410, 20, 120);//pionowy z odwroconej elki
-	l.add_wall(90, 410, 80, 20);//poziomy z odwroconej elki
+	l.add_wall(200, 400, 20, 120);//pionowy z odwroconej elki
+	l.add_wall(90, 400, 110, 20);//poziomy z odwroconej elki
 
 	//kinole
-	l.add_wall(370, 510, 180, 20);//kinol dolny poziome
-	l.add_wall(450, 530, 20, 100);//kinol dolny pionowe
+	l.add_wall(400, 500, 120, 20);//kinol dolny poziome
+	l.add_wall(450, 520, 20, 100);//kinol dolny pionowe
 
-	l.add_wall(450, 330, 20, 100);//kinol pionowe gorne
-	l.add_wall(370, 310, 180, 20);//kinol poziome gora
+	l.add_wall(450, 320, 20, 100);//kinol pionowe gorne
+	l.add_wall(400, 300, 120, 20);//kinol poziome gora
 
-	l.add_wall(370, 90, 180, 20);//kinol najwyzszy poziome
-	l.add_wall(450, 110, 20, 120);//kinol najwyzszy pionowe
+	l.add_wall(400, 100, 120, 20);//kinol najwyzszy poziome
+	l.add_wall(450, 120, 20, 100);//kinol najwyzszy pionowe
 
 	//prawy rog
-	l.add_wall(910, 610, 85, 20); // poziomy dol 1
-	l.add_wall(1075, 610, 85, 20);//poziomy dol 2
-	l.add_wall(830, 510, 330, 20);//poziomy gora
-	l.add_wall(910, 410, 20, 100);//pionowy gora
-	l.add_wall(550, 410, 100, 20);
-	l.add_wall(1000, 410, 160, 20);
+	l.add_wall(900, 600, 120, 20); // poziomy dol 1
+	l.add_wall(1100, 600, 70, 20);//poziomy dol 2
+	l.add_wall(800, 500, 370, 20);//poziomy gora
+	l.add_wall(900, 400, 20, 100);//pionowy gora
+	l.add_wall(550, 400, 70, 20);
+	l.add_wall(1000, 400, 170, 20);
 	//niepelnosprawne f
-	l.add_wall(550, 610, 280, 20);//poziomy z f
-	l.add_wall(630, 510, 20, 100);//pionowy z f
+	l.add_wall(550, 600, 270, 20);//poziomy z f
+	l.add_wall(600, 500, 20, 100);//pionowy z f
 
 
 
 	//odwr elka
-	l.add_wall(730, 410, 20, 120);//pionowy z elki
-	l.add_wall(750, 410, 80, 20);//poziomy z elki
+	l.add_wall(700, 400, 20, 120);//pionowy z elki
+	l.add_wall(720, 400, 100, 20);//poziomy z elki
 
 	//srodek
-	l.add_wall(270, 230, 20, 100);//pionowy lewy
-	l.add_wall(270, 210, 100, 20);//poziomy lewy
-	l.add_wall(630, 230, 20, 100);//pionowy prawy
-	l.add_wall(550, 210, 100, 20);//poziomy prawy
+	l.add_wall(300, 220, 20, 100);//pionowy lewy
+	l.add_wall(300, 200, 70, 20);//poziomy lewy
+	l.add_wall(600, 220, 20, 100);//pionowy prawy
+	l.add_wall(550, 200, 70, 20);//poziomy prawy
 
 
 	//lewy gora
-	l.add_wall(90, 90, 20, 240);//pionowy
-	l.add_wall(110, 210, 80, 20);//poziomy
-	l.add_wall(190, 10, 20, 80);//pionowy lewy gora
-	l.add_wall(190, 90, 100, 20);//poziomy lewy gora
+	l.add_wall(100, 100, 20, 220);//pionowy
+	l.add_wall(120, 200, 100, 20);//poziomy
+	l.add_wall(200, 20, 20, 80);//pionowy lewy gora
+	l.add_wall(200, 100, 120, 20);//poziomy lewy gora
+	l.add_wall(200, 300, 20, 20);//kwadrat
 
 	//prawy gora
-	l.add_wall(630, 90, 100, 20);//poziomy prawy gora
-	l.add_wall(710, 10, 20, 80);//pionowy prawy gora
-	l.add_wall(730, 210, 80, 20);//poziomy
-	l.add_wall(810, 90, 20, 240);//pionowy
+	l.add_wall(600, 100, 120, 20);//poziomy prawy gora
+	l.add_wall(700, 20, 20, 80);//pionowy prawy gora
+	l.add_wall(700, 200, 100, 20);//poziomy
+	l.add_wall(800, 100, 20, 220);//pionowy
+	l.add_wall(700, 300, 20, 20);//kwadrat
 	//kwadrat duzy
-	l.add_wall(890, 90, 20, 240);//lewy bok
-	l.add_wall(910, 90, 260, 20);//gora
-	l.add_wall(1150, 90, 20, 240);//prawy bok
-	l.add_wall(910, 310, 80, 20);//lewy dol
-	l.add_wall(1070, 310, 100, 20);//prawy dol
-	l.add_wall(980, 170, 100, 80);
+	l.add_wall(900, 100, 20, 220);//lewy bok
+	l.add_wall(920, 100, 250, 20);//gora
+	l.add_wall(1150, 100, 20, 220);//prawy bok
+	l.add_wall(900, 300, 70, 20);//lewy dol
+	l.add_wall(1050, 300, 100, 20);//prawy dol
+	l.add_wall(1000, 200, 70, 20);//kwadrat w srodku
 }
 
 //#include <SFML/Graphics.hpp>
@@ -1647,7 +1653,7 @@ void map3(labirynth& l)
 //		}
 //	}
 //
-//	// Funkcja sprawdzajaca, czy duszek ma zblizyæ sie do PacMana
+//	// Funkcja sprawdzajaca, czy duszek ma zblizyÃ¦ sie do PacMana
 //	void move_towards_pacman(const pacman& pacman, const Labirynth& labirynth)
 //	{
 //		// Obliczanie roznicy pozycji w obu osiach
@@ -1655,7 +1661,7 @@ void map3(labirynth& l)
 //		float dy = pacman.get_position().y - p.y;
 //
 //		// Normalizacja wektora kierunku
-//		float distance = sqrt(dx * dx + dy * dy); // Odleglosæ do PacMana
+//		float distance = sqrt(dx * dx + dy * dy); // OdleglosÃ¦ do PacMana
 //		dx /= distance;
 //		dy /= distance;
 //
@@ -1701,7 +1707,7 @@ void map3(labirynth& l)
 //		else {
 //			// Jesli napotka sciane w wybranym kierunku, sprobuj innego
 //			if (currentDirection.left && wall_collision_left(labirynth)) {
-//				// SprawdŸ inne kierunki
+//				// SprawdÂŸ inne kierunki
 //				if (!wall_collision_up(labirynth)) {
 //					p.y -= SPEED / 2.0; // Ruch w gore
 //				}
@@ -1713,7 +1719,7 @@ void map3(labirynth& l)
 //				}
 //			}
 //			else if (currentDirection.right && wall_collision_right(labirynth)) {
-//				// SprawdŸ inne kierunki
+//				// SprawdÂŸ inne kierunki
 //				if (!wall_collision_up(labirynth)) {
 //					p.y -= SPEED / 2.0; // Ruch w gore
 //				}
@@ -1725,7 +1731,7 @@ void map3(labirynth& l)
 //				}
 //			}
 //			else if (currentDirection.up && wall_collision_up(labirynth)) {
-//				// SprawdŸ inne kierunki
+//				// SprawdÂŸ inne kierunki
 //				if (!wall_collision_left(labirynth)) {
 //					p.x -= SPEED / 2.0; // Ruch w lewo
 //				}
@@ -1737,7 +1743,7 @@ void map3(labirynth& l)
 //				}
 //			}
 //			else if (currentDirection.down && wall_collision_down(labirynth)) {
-//				// SprawdŸ inne kierunki
+//				// SprawdÂŸ inne kierunki
 //				if (!wall_collision_left(labirynth)) {
 //					p.x -= SPEED / 2.0; // Ruch w lewo
 //				}
@@ -1835,7 +1841,7 @@ void map3(labirynth& l)
 //			for (float x = 0; x < WIDTH; x += 40.5) {
 //				FloatRect pointBounds(x + 10, y + 10, 20, 20); // Obszar punktu
 //
-//				// SprawdŸ, czy punkt nie koliduje ze scianami
+//				// SprawdÂŸ, czy punkt nie koliduje ze scianami
 //				bool collidesWithWall = false;
 //				for (const auto& wall : labirynth.get_walls()) {
 //					if (wall.check_collision(pointBounds)) {
@@ -1844,11 +1850,11 @@ void map3(labirynth& l)
 //					}
 //				}
 //
-//				// SprawdŸ, czy punkt nie jest w strefie startowej duszkow
+//				// SprawdÂŸ, czy punkt nie jest w strefie startowej duszkow
 //
 //
 //				if (!collidesWithWall) {
-//					CircleShape point(10); // Promieñ 10 = srednica 20
+//					CircleShape point(10); // PromieÃ± 10 = srednica 20
 //					point.setFillColor(Color::White);
 //					point.setPosition(x, y);
 //					points.push_back(point);
@@ -1862,7 +1868,7 @@ void map3(labirynth& l)
 //
 //		for (auto it = points.begin(); it != points.end();) {
 //			if (it->getGlobalBounds().intersects(pacmanBounds)) {
-//				it = points.erase(it); // Usuñ punkt
+//				it = points.erase(it); // UsuÃ± punkt
 //				score++; // Zwieksz liczbe punktow
 //			}
 //			else {
@@ -1879,7 +1885,7 @@ void map3(labirynth& l)
 //		// Rysowanie licznika punktow
 //		Font font;
 //		if (!font.loadFromFile("arial.ttf")) {
-//			cerr << "Nie mozna zaladowaæ czcionki!\n";
+//			cerr << "Nie mozna zaladowaÃ¦ czcionki!\n";
 //			return;
 //		}
 //
