@@ -640,6 +640,7 @@ private:
 		bool up;
 		bool down;
 	};
+	
 public:
 	position p;
 	movement m{};
@@ -649,7 +650,7 @@ public:
 		p.y = 40;
 		speed = SPEED;
 	}
-
+	
 	void move()
 	{
 
@@ -716,6 +717,7 @@ public:
 	void draw(RenderWindow& window) const
 	{
 		CircleShape shape(15.f);
+		
 		shape.setFillColor(Color::Yellow);
 		shape.setPosition(p.x, p.y);
 		window.draw(shape);
@@ -813,9 +815,13 @@ public:
 
 	}
 	Color get_color() const
+
 	{
 		return color1;
 	}
+	
+
+	
 	void draw(RenderWindow& window) const
 	{
 		CircleShape shape(15.f);
@@ -846,7 +852,7 @@ public:
 
 class punkty {
 private:
-	std::vector<punkt> points; // Przechowywanie punktow
+	vector<punkt> points; // Przechowywanie punktow
 public:
 	// Dodaje punkt do wektora
 	void add_punkt(float x, float y, float radius = 10.f) {
@@ -869,12 +875,12 @@ public:
 	// Usuwa punkt (np. po zjedzeniu przez pacmana)
 	void remove_punkt(const FloatRect& pacman_bounds) {
 		points.erase(
-			std::remove_if(points.begin(), points.end(),
+			remove_if(points.begin(), points.end(),
 				[&](const punkt& point) {return pacman_bounds.intersects(point.get_bounding_box()); }), points.end());
 	}
 
 	// Zwraca wektor punktow
-	const std::vector<punkt>& get_punkty() const {
+	const vector<punkt>& get_punkty() const {
 		return points;
 	}
 };
@@ -955,10 +961,10 @@ void map1(labirynth& l, punkty& punkty);
 void map2(labirynth& l, punkty& punkty);
 void map3(labirynth& l, punkty& punkty);
 
-void fill_with_punkty(punkty& punkty, const float x, const float y, const int n, const int m, const float distance) {
-	for (int i = 0; i < n; i++) {
+void fill_with_punkty(punkty& punkty, const float x, const float y, const int k, const int w, const float distance) {
+	for (int i = 0; i < k; i++) {
 		punkty.add_punkt(x + i * distance, y);
-		for (int j = 0; j < m; j++)
+		for (int j = 0; j < w; j++)
 			punkty.add_punkt(x + i * distance, y + j * distance);
 	}
 }
