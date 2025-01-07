@@ -964,7 +964,7 @@ void fill_with_punkty(punkty& punkty, const float x, const float y, const int n,
 }
 
 
-void generate_pause_text(Font& font, Text& paused_text, Text& continue_text) {
+void generate_pause_text(Font& font, Text& paused_text, Text& continue_text,Text& help_text,Text& quit_text,Text& confirmation) {
 	if (!font.loadFromFile("bruno.ttf")) {
 		cerr << "Failed to load font!" << endl;
 		exit(-1);
@@ -977,11 +977,87 @@ void generate_pause_text(Font& font, Text& paused_text, Text& continue_text) {
 	paused_text.setPosition(WIDTH / 2 - paused_text.getGlobalBounds().width / 2, 50);
 
 	continue_text.setFont(font);
-	continue_text.setString("Press Escape to continue");
+	continue_text.setString("Press F1 to continue");
 	continue_text.setCharacterSize(30);
 	continue_text.setFillColor(Color::White);
 	continue_text.setPosition(WIDTH / 2 - continue_text.getGlobalBounds().width / 2, 500);
+
+	help_text.setFont(font);
+	help_text.setString("\254Press F1 for help\n\254Use arrows to move\n\254Press escape to quit the game\n\nCollect the Points and avoid the Ghosts!");
+	help_text.setCharacterSize(30);
+	help_text.setFillColor(Color::White);
+	help_text.setPosition(WIDTH / 2 - help_text.getGlobalBounds().width / 2, 200);
+
+	quit_text.setFont(font);
+	quit_text.setString("Are you sure you want to quit?");
+	quit_text.setCharacterSize(60);
+	quit_text.setFillColor(Color::White);
+	quit_text.setPosition(WIDTH / 2 - quit_text.getGlobalBounds().width / 2, 50);
+
+	confirmation.setFont(font);
+	confirmation.setString("Press Y to quit or N to continue");
+	confirmation.setCharacterSize(30);
+	confirmation.setFillColor(Color::White);
+	confirmation.setPosition(WIDTH / 2 - confirmation.getGlobalBounds().width / 2, 500);
 }
+
+void display_menu(RenderWindow& window, Font& font) {
+    Texture backgroundTexture;
+    if (!backgroundTexture.loadFromFile("back1.png")) {
+        cerr << "Failed to load background image!" << endl;
+        exit(-1);
+    }
+    Sprite backgroundSprite;
+    backgroundSprite.setTexture(backgroundTexture);
+	RectangleShape dark_background(Vector2f(WIDTH, HEIGHT));
+	dark_background.setFillColor(Color(0, 0, 0, 200));
+    Text title, start_text, quit_text,author;
+    title.setFont(font);
+    title.setString("PacMan");
+    title.setCharacterSize(60);
+    title.setFillColor(Color::White);
+    title.setPosition(WIDTH / 2 - title.getGlobalBounds().width / 2, 100);
+
+    start_text.setFont(font);
+    start_text.setString("Press Enter to Start");
+    start_text.setCharacterSize(30);
+    start_text.setFillColor(Color::White);
+    start_text.setPosition(WIDTH / 2 - start_text.getGlobalBounds().width / 2, 300);
+
+    quit_text.setFont(font);
+    quit_text.setString("Press Escape to Quit");
+    quit_text.setCharacterSize(30);
+    quit_text.setFillColor(Color::White);
+    quit_text.setPosition(WIDTH / 2 - quit_text.getGlobalBounds().width / 2, 400);
+
+	author.setFont(font);
+	author.setString("Nikodem Kozlowski 199239 ARiSS1\n	Tomasz Nazar 197613 ACiR3");
+	author.setCharacterSize(15);
+	author.setFillColor(Color::White);
+	author.setPosition(WIDTH / 2 - author.getGlobalBounds().width / 2, 600);
+
+    while (window.isOpen()) {
+        Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == Event::Closed)
+                window.close();
+            if (event.type == Event::KeyPressed && event.key.code == Keyboard::Enter)
+                return; // Start the game
+            if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+                window.close(); // Quit the game
+        }
+
+        window.clear();
+        window.draw(backgroundSprite);
+		window.draw(dark_background);
+        window.draw(title);
+        window.draw(start_text);
+        window.draw(quit_text);
+		window.draw(author);
+        window.display();
+    }
+}
+
 
 int main() {
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "PacMan");
@@ -1000,25 +1076,31 @@ int main() {
 	//map3(labirynth);
 
 	bool is_paused = false;
+	bool quit_confirmation = false;
 
 	// Load font for displaying "Paused" text
 	Font font;
-	Text paused_text, continue_text;
-	generate_pause_text(font, paused_text, continue_text);
+	Text paused_text, continue_text, help_text, quit_text, confirmation;
+	generate_pause_text(font, paused_text, continue_text, help_text, quit_text, confirmation);
 
 	RectangleShape dark_background(Vector2f(WIDTH, HEIGHT));
 	dark_background.setFillColor(Color(0, 0, 0, 220)); // Semi-transparent dark background
+
+	// Display the menu
+	display_menu(window, font);
 
 	while (window.isOpen()) {
 		Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == Event::Closed)
 				window.close();
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::F1)
 				is_paused = !is_paused;
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+				quit_confirmation = true;
 		}
 
-		if (!is_paused) {
+		if (!is_paused && !quit_confirmation) {
 			// Ruch PacMana
 			p.move();
 			p.handle_collision_with_wall(labirynth);
@@ -1034,7 +1116,6 @@ int main() {
 				if (wall.check_collision(g3.get_bounding_box())) g3.change_direction();
 				if (wall.check_collision(g4.get_bounding_box())) g4.change_direction();
 			}
-
 			g.move(p, wall(0, 0, 0, 0));  // Duszki uzywaja swojej logiki
 			g1.move(p, wall(0, 0, 0, 0)); // Uzycie pustego walla, bo logika jest w glownym
 			g2.move(p, wall(0, 0, 0, 0));
@@ -1057,12 +1138,22 @@ int main() {
 			window.draw(dark_background);
 			window.draw(paused_text);
 			window.draw(continue_text);
+			window.draw(help_text);
 		}
-
+		if (quit_confirmation) {
+			window.draw(dark_background);
+			window.draw(quit_text);
+			window.draw(confirmation);
+			if (Keyboard::isKeyPressed(Keyboard::Y))
+				window.close();
+			if (Keyboard::isKeyPressed(Keyboard::N))
+				quit_confirmation = false;
+		}
 		window.display();
 	}
 	return 0;
 }
+
 
 void map1(labirynth& l)
 {
