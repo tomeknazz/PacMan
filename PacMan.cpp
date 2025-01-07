@@ -832,7 +832,7 @@ public:
 	punkt(const float x, const float y, const float radius = 10.f) {
 		shape.setPosition(x, y);
 		shape.setRadius(radius);
-		shape.setFillColor(Color::White); // Mozesz ustawiæ dowolny kolor
+		shape.setFillColor(Color::White); // Mozesz ustawiÃ¦ dowolny kolor
 	}
 	// Zwraca bounding box punktu
 	FloatRect get_bounding_box() const {
@@ -893,7 +893,7 @@ public:
 //			for (float x = 0; x < WIDTH; x += 40.5) {
 //				FloatRect pointBounds(x + 10, y + 10 , 20, 20); // Obszar punktu
 //
-//				// SprawdŸ, czy punkt nie koliduje ze scianami
+//				// SprawdÂŸ, czy punkt nie koliduje ze scianami
 //				bool collidesWithWall = false;
 //				for (const auto& wall : labirynth.get_walls()) {
 //					if (wall.check_collision(pointBounds)) {
@@ -902,11 +902,11 @@ public:
 //					}
 //				}
 //
-//				// SprawdŸ, czy punkt nie jest w strefie startowej duszkow
+//				// SprawdÂŸ, czy punkt nie jest w strefie startowej duszkow
 //			
 //
 //				if (!collidesWithWall) {
-//					CircleShape point(10); // Promieñ 10 = srednica 20
+//					CircleShape point(10); // PromieÃ± 10 = srednica 20
 //					point.setFillColor(Color::White);
 //					point.setPosition(x, y);
 //					points.push_back(point);
@@ -920,7 +920,7 @@ public:
 //
 //		for (auto it = points.begin(); it != points.end();) {
 //			if (it->getGlobalBounds().intersects(pacmanBounds)) {
-//				it = points.erase(it); // Usuñ punkt
+//				it = points.erase(it); // UsuÃ± punkt
 //				score++; // Zwieksz liczbe punktow
 //			}
 //			else {
@@ -937,7 +937,7 @@ public:
 //		// Rysowanie licznika punktow
 //		Font font;
 //		if (!font.loadFromFile("arial.ttf")) {
-//			cerr << "Nie mozna zaladowaæ czcionki!\n";
+//			cerr << "Nie mozna zaladowaÃ¦ czcionki!\n";
 //			return;
 //		}
 //
@@ -964,7 +964,7 @@ void fill_with_punkty(punkty& punkty, const float x, const float y, const int n,
 }
 
 
-void generate_pause_text(Font& font, Text& paused_text, Text& continue_text) {
+void generate_pause_text(Font& font, Text& paused_text, Text& continue_text, Text& help_text, Text& quit_text, Text& confirmation) {
 	if (!font.loadFromFile("bruno.ttf")) {
 		cerr << "Failed to load font!" << endl;
 		exit(-1);
@@ -977,11 +977,131 @@ void generate_pause_text(Font& font, Text& paused_text, Text& continue_text) {
 	paused_text.setPosition(WIDTH / 2 - paused_text.getGlobalBounds().width / 2, 50);
 
 	continue_text.setFont(font);
-	continue_text.setString("Press Escape to continue");
+	continue_text.setString("Press F1 to continue");
 	continue_text.setCharacterSize(30);
 	continue_text.setFillColor(Color::White);
 	continue_text.setPosition(WIDTH / 2 - continue_text.getGlobalBounds().width / 2, 500);
+
+	help_text.setFont(font);
+	help_text.setString("\254Press F1 for help\n\254Use arrows to move\n\254Press escape to quit the game\n\nCollect the Points and avoid the Ghosts!");
+	help_text.setCharacterSize(30);
+	help_text.setFillColor(Color::White);
+	help_text.setPosition(WIDTH / 2 - help_text.getGlobalBounds().width / 2, 200);
+
+	quit_text.setFont(font);
+	quit_text.setString("Are you sure you want to quit?");
+	quit_text.setCharacterSize(60);
+	quit_text.setFillColor(Color::White);
+	quit_text.setPosition(WIDTH / 2 - quit_text.getGlobalBounds().width / 2, 50);
+
+	confirmation.setFont(font);
+	confirmation.setString("Press Y to quit or N to continue");
+	confirmation.setCharacterSize(30);
+	confirmation.setFillColor(Color::White);
+	confirmation.setPosition(WIDTH / 2 - confirmation.getGlobalBounds().width / 2, 500);
 }
+
+void choose_map(RenderWindow& window, Font& font, int& choice, Sprite& backgroundSprite, RectangleShape& dark_background, Text& title, Text& author) {
+	Text map_text;
+	map_text.setFont(font);
+	map_text.setString("1.  Map 1\n2. Map 2\n3. Map 3");
+	map_text.setCharacterSize(30);
+	map_text.setFillColor(Color::White);
+	map_text.setPosition(WIDTH / 2 - map_text.getGlobalBounds().width / 2, 300);
+
+	while (window.isOpen()) {
+		Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == Event::Closed)
+				window.close();
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num1) {
+				choice = 1;
+				return;
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num2) {
+				choice = 2;
+				return;
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num3) {
+				choice = 3;
+				return;
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+				window.close(); // Quit the game
+		}
+
+		window.clear();
+		window.draw(backgroundSprite);
+		window.draw(dark_background);
+		window.draw(title);
+		window.draw(map_text);
+		window.draw(author);
+		window.display();
+	}
+}
+
+
+void display_menu(RenderWindow& window, Font& font, int& choice) {
+	Texture backgroundTexture;
+	if (!backgroundTexture.loadFromFile("back1.png")) {
+		cerr << "Failed to load background image!" << endl;
+		exit(-1);
+	}
+	Sprite backgroundSprite;
+	backgroundSprite.setTexture(backgroundTexture);
+	RectangleShape dark_background(Vector2f(WIDTH, HEIGHT));
+	dark_background.setFillColor(Color(0, 0, 0, 200));
+	Text title, start_text, quit_text, author;
+	title.setFont(font);
+	title.setString("PacMan");
+	title.setCharacterSize(60);
+	title.setFillColor(Color::White);
+	title.setPosition(WIDTH / 2 - title.getGlobalBounds().width / 2, 100);
+
+	start_text.setFont(font);
+	start_text.setString("Press Enter to Start");
+	start_text.setCharacterSize(30);
+	start_text.setFillColor(Color::White);
+	start_text.setPosition(WIDTH / 2 - start_text.getGlobalBounds().width / 2, 300);
+
+	quit_text.setFont(font);
+	quit_text.setString("Press Escape to Quit");
+	quit_text.setCharacterSize(30);
+	quit_text.setFillColor(Color::White);
+	quit_text.setPosition(WIDTH / 2 - quit_text.getGlobalBounds().width / 2, 400);
+
+	author.setFont(font);
+	author.setString("Nikodem Kozlowski 199239 ARiSS1\nTomasz Nazar 197613 ACiR3");
+	author.setCharacterSize(15);
+	author.setFillColor(Color::White);
+	author.setPosition(WIDTH / 2 - author.getGlobalBounds().width / 2, 600);
+
+	while (window.isOpen()) {
+		Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == Event::Closed)
+				window.close();
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Enter) {
+				choose_map(window, font, choice, backgroundSprite, dark_background, title, author);
+				return;
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+				window.close(); // Quit the game
+		}
+
+		window.clear();
+		window.draw(backgroundSprite);
+		window.draw(dark_background);
+		window.draw(title);
+		window.draw(start_text);
+		window.draw(quit_text);
+		window.draw(author);
+		window.display();
+	}
+}
+
+
+
 
 int main() {
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "PacMan");
@@ -993,32 +1113,49 @@ int main() {
 	ghost g4(40, 40, Color::Magenta);
 
 	punkty punkty;
-	labirynth labirynth;
-
-	/*map1(labirynth, punkty);*/
-	/*map2(labirynth, punkty);*/
-	map3(labirynth, punkty);
+	labirynth labirynth
 
 	bool is_paused = false;
+	bool quit_confirmation = false;
 
 	// Load font for displaying "Paused" text
 	Font font;
-	Text paused_text, continue_text;
-	generate_pause_text(font, paused_text, continue_text);
+	Text paused_text, continue_text, help_text, quit_text, confirmation;
+	generate_pause_text(font, paused_text, continue_text, help_text, quit_text, confirmation);
 
 	RectangleShape dark_background(Vector2f(WIDTH, HEIGHT));
 	dark_background.setFillColor(Color(0, 0, 0, 220)); // Semi-transparent dark background
+	int choice = 0;
+	// Display the menu
+	display_menu(window, font, choice);
+
+	switch (choice) {
+	case 1:
+		map1(labirynth,punkty);
+		break;
+	case 2:
+		map2(labirynth, punkty);
+		break;
+	case 3:
+		map3(labirynth,punkty);
+		break;
+	default:
+		window.close();
+		return 0;
+	}
 
 	while (window.isOpen()) {
 		Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == Event::Closed)
 				window.close();
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::F1)
 				is_paused = !is_paused;
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+				quit_confirmation = true;
 		}
 
-		if (!is_paused) {
+		if (!is_paused && !quit_confirmation) {
 			// Ruch PacMana
 			p.move();
 			p.handle_collision_with_wall(labirynth);
@@ -1034,7 +1171,6 @@ int main() {
 				if (wall.check_collision(g3.get_bounding_box())) g3.change_direction();
 				if (wall.check_collision(g4.get_bounding_box())) g4.change_direction();
 			}
-
 			g.move(p, wall(0, 0, 0, 0));  // Duszki uzywaja swojej logiki
 			g1.move(p, wall(0, 0, 0, 0)); // Uzycie pustego walla, bo logika jest w glownym
 			g2.move(p, wall(0, 0, 0, 0));
@@ -1057,14 +1193,25 @@ int main() {
 			window.draw(dark_background);
 			window.draw(paused_text);
 			window.draw(continue_text);
+			window.draw(help_text);
 		}
-
+		if (quit_confirmation) {
+			window.draw(dark_background);
+			window.draw(quit_text);
+			window.draw(confirmation);
+			if (Keyboard::isKeyPressed(Keyboard::Y))
+				window.close();
+			if (Keyboard::isKeyPressed(Keyboard::N))
+				quit_confirmation = false;
+		}
 		window.display();
 	}
 	return 0;
 }
 
+
 void map1(labirynth& l, punkty& punkty)
+
 {
 	fill_with_punkty(punkty, 50, 50, 24, 13, 50);
 	
@@ -1506,7 +1653,7 @@ void map3(labirynth& l, punkty& punkty)
 //		}
 //	}
 //
-//	// Funkcja sprawdzajaca, czy duszek ma zblizyæ sie do PacMana
+//	// Funkcja sprawdzajaca, czy duszek ma zblizyÃ¦ sie do PacMana
 //	void move_towards_pacman(const pacman& pacman, const Labirynth& labirynth)
 //	{
 //		// Obliczanie roznicy pozycji w obu osiach
@@ -1514,7 +1661,7 @@ void map3(labirynth& l, punkty& punkty)
 //		float dy = pacman.get_position().y - p.y;
 //
 //		// Normalizacja wektora kierunku
-//		float distance = sqrt(dx * dx + dy * dy); // Odleglosæ do PacMana
+//		float distance = sqrt(dx * dx + dy * dy); // OdleglosÃ¦ do PacMana
 //		dx /= distance;
 //		dy /= distance;
 //
@@ -1560,7 +1707,7 @@ void map3(labirynth& l, punkty& punkty)
 //		else {
 //			// Jesli napotka sciane w wybranym kierunku, sprobuj innego
 //			if (currentDirection.left && wall_collision_left(labirynth)) {
-//				// SprawdŸ inne kierunki
+//				// SprawdÂŸ inne kierunki
 //				if (!wall_collision_up(labirynth)) {
 //					p.y -= SPEED / 2.0; // Ruch w gore
 //				}
@@ -1572,7 +1719,7 @@ void map3(labirynth& l, punkty& punkty)
 //				}
 //			}
 //			else if (currentDirection.right && wall_collision_right(labirynth)) {
-//				// SprawdŸ inne kierunki
+//				// SprawdÂŸ inne kierunki
 //				if (!wall_collision_up(labirynth)) {
 //					p.y -= SPEED / 2.0; // Ruch w gore
 //				}
@@ -1584,7 +1731,7 @@ void map3(labirynth& l, punkty& punkty)
 //				}
 //			}
 //			else if (currentDirection.up && wall_collision_up(labirynth)) {
-//				// SprawdŸ inne kierunki
+//				// SprawdÂŸ inne kierunki
 //				if (!wall_collision_left(labirynth)) {
 //					p.x -= SPEED / 2.0; // Ruch w lewo
 //				}
@@ -1596,7 +1743,7 @@ void map3(labirynth& l, punkty& punkty)
 //				}
 //			}
 //			else if (currentDirection.down && wall_collision_down(labirynth)) {
-//				// SprawdŸ inne kierunki
+//				// SprawdÂŸ inne kierunki
 //				if (!wall_collision_left(labirynth)) {
 //					p.x -= SPEED / 2.0; // Ruch w lewo
 //				}
@@ -1694,7 +1841,7 @@ void map3(labirynth& l, punkty& punkty)
 //			for (float x = 0; x < WIDTH; x += 40.5) {
 //				FloatRect pointBounds(x + 10, y + 10, 20, 20); // Obszar punktu
 //
-//				// SprawdŸ, czy punkt nie koliduje ze scianami
+//				// SprawdÂŸ, czy punkt nie koliduje ze scianami
 //				bool collidesWithWall = false;
 //				for (const auto& wall : labirynth.get_walls()) {
 //					if (wall.check_collision(pointBounds)) {
@@ -1703,11 +1850,11 @@ void map3(labirynth& l, punkty& punkty)
 //					}
 //				}
 //
-//				// SprawdŸ, czy punkt nie jest w strefie startowej duszkow
+//				// SprawdÂŸ, czy punkt nie jest w strefie startowej duszkow
 //
 //
 //				if (!collidesWithWall) {
-//					CircleShape point(10); // Promieñ 10 = srednica 20
+//					CircleShape point(10); // PromieÃ± 10 = srednica 20
 //					point.setFillColor(Color::White);
 //					point.setPosition(x, y);
 //					points.push_back(point);
@@ -1721,7 +1868,7 @@ void map3(labirynth& l, punkty& punkty)
 //
 //		for (auto it = points.begin(); it != points.end();) {
 //			if (it->getGlobalBounds().intersects(pacmanBounds)) {
-//				it = points.erase(it); // Usuñ punkt
+//				it = points.erase(it); // UsuÃ± punkt
 //				score++; // Zwieksz liczbe punktow
 //			}
 //			else {
@@ -1738,7 +1885,7 @@ void map3(labirynth& l, punkty& punkty)
 //		// Rysowanie licznika punktow
 //		Font font;
 //		if (!font.loadFromFile("arial.ttf")) {
-//			cerr << "Nie mozna zaladowaæ czcionki!\n";
+//			cerr << "Nie mozna zaladowaÃ¦ czcionki!\n";
 //			return;
 //		}
 //
