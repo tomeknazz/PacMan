@@ -1113,7 +1113,7 @@ int main() {
 	ghost g4(40, 40, Color::Magenta);
 
 	punkty punkty;
-	labirynth labirynth
+	labirynth labirynth;
 
 	bool is_paused = false;
 	bool quit_confirmation = false;
