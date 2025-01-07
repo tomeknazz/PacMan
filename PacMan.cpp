@@ -1240,7 +1240,7 @@ void map3(labirynth& l, punkty& punkty)
 	l.add_wall(550, 400, 70, 20);
 	l.add_wall(1000, 400, 170, 20);
 	//niepelnosprawne f
-	l.add_wall(550, 600, 280, 20);//poziomy z f
+	l.add_wall(550, 600, 270, 20);//poziomy z f
 	l.add_wall(600, 500, 20, 100);//pionowy z f
 
 
