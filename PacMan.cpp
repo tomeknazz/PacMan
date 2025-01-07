@@ -91,7 +91,7 @@ public:
 	}
 	void move()
 	{
-		if (GetAsyncKeyState(VK_LEFT));
+		if (GetAsyncKeyState(VK_LEFT))
 		{
 			m.left = true;
 			m.right = false;
