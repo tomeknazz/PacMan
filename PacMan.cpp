@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <iostream>
 
-constexpr float SPEED = 0.05;
+constexpr float SPEED = 0.05f;
 constexpr int WIDTH = 1270;
 constexpr int HEIGHT = 720;
 using namespace std;
@@ -433,7 +433,7 @@ void generate_pause_text(Font& font, Text& paused_text, Text& continue_text, Tex
 	confirmation.setPosition(WIDTH / 2 - confirmation.getGlobalBounds().width / 2, 500);
 }
 
-void choose_map(RenderWindow& window, Font& font, int& choice, Sprite& backgroundSprite, RectangleShape& dark_background, Text& title, Text& author) {
+void choose_map(RenderWindow& window, Font& font, int& choice, Sprite& background_sprite, RectangleShape& dark_background, Text& title, Text& author) {
 	Text map_text;
 	map_text.setFont(font);
 	map_text.setString("1.  Map 1\n2. Map 2\n3. Map 3");
@@ -463,7 +463,7 @@ void choose_map(RenderWindow& window, Font& font, int& choice, Sprite& backgroun
 		}
 
 		window.clear();
-		window.draw(backgroundSprite);
+		window.draw(background_sprite);
 		window.draw(dark_background);
 		window.draw(title);
 		window.draw(map_text);
@@ -473,13 +473,13 @@ void choose_map(RenderWindow& window, Font& font, int& choice, Sprite& backgroun
 }
 
 void display_menu(RenderWindow& window, Font& font, int& choice) {
-	Texture backgroundTexture;
-	if (!backgroundTexture.loadFromFile("back1.png")) {
+	Texture background_texture;
+	if (!background_texture.loadFromFile("back1.png")) {
 		cerr << "Failed to load background image!" << endl;
 		exit(-1);
 	}
-	Sprite backgroundSprite;
-	backgroundSprite.setTexture(backgroundTexture);
+	Sprite background_sprite;
+	background_sprite.setTexture(background_texture);
 	RectangleShape dark_background(Vector2f(WIDTH, HEIGHT));
 	dark_background.setFillColor(Color(0, 0, 0, 200));
 	Text title, start_text, quit_text, author;
@@ -502,7 +502,7 @@ void display_menu(RenderWindow& window, Font& font, int& choice) {
 	quit_text.setPosition(WIDTH / 2 - quit_text.getGlobalBounds().width / 2, 400);
 
 	author.setFont(font);
-	author.setString("Nikodem Kozlowski 199239 ARiSS1\nTomasz Nazar 197613 ACiR3");
+	author.setString("Nikodem Kozlowski 199239 ARiSS1\n	Tomasz Nazar 197613 ACiR3");
 	author.setCharacterSize(15);
 	author.setFillColor(Color::White);
 	author.setPosition(WIDTH / 2 - author.getGlobalBounds().width / 2, 600);
@@ -513,15 +513,14 @@ void display_menu(RenderWindow& window, Font& font, int& choice) {
 			if (event.type == Event::Closed)
 				window.close();
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Enter) {
-				choose_map(window, font, choice, backgroundSprite, dark_background, title, author);
+				choose_map(window, font, choice, background_sprite, dark_background, title, author);
 				return;
 			}
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
 				window.close(); // Quit the game
 		}
-
 		window.clear();
-		window.draw(backgroundSprite);
+		window.draw(background_sprite);
 		window.draw(dark_background);
 		window.draw(title);
 		window.draw(start_text);
