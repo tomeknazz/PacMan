@@ -62,7 +62,7 @@ public:
 	}
 };
 
-class pacman
+class pacman 
 {
 private:
 	struct position
@@ -80,16 +80,20 @@ private:
 		bool up;
 		bool down;
 	};
+
 	
 public:
 	position p;
 	movement m{};
 	pacman()
 	{
-		p.x = 40;
-		p.y = 40;
+		p.x = 550;
+		p.y = 645;
 		speed = SPEED;
 	}
+	
+
+
 	void move()
 	{
 		if (GetAsyncKeyState(VK_LEFT))
@@ -149,11 +153,11 @@ public:
 		shape.setPosition(p.x, p.y);
 		return shape.getGlobalBounds();
 	}
+	
 
 	void draw(RenderWindow& window) const
 	{
 		CircleShape shape(15.f);
-		
 		shape.setFillColor(Color::Yellow);
 		shape.setPosition(p.x, p.y);
 		window.draw(shape);
@@ -164,6 +168,108 @@ public:
 		return p;
 	}
 };
+
+//class ghost : public pacman
+//{
+//private:
+//	Color color1;
+//	struct movement
+//	{
+//		bool left;
+//		bool right;
+//		bool up;
+//		bool down;
+//	};
+//public:
+//	movement m{};
+//	ghost(const float x, const float y, const Color color)
+//	{
+//		p.x = x;
+//		p.y = y;
+//		color1 = color;
+//	}
+//
+//	void change_direction() {
+//
+//		// Losowa zmiana kierunku o 90 stopni
+//		const int direction = rand() % 4;
+//		if (direction == 0) {
+//			m.left = true;
+//			m.right = m.up = m.down = false;
+//		}
+//		else if (direction == 1) {
+//			m.right = true;
+//			m.left = m.up = m.down = false;
+//		}
+//		else if (direction == 2) {
+//			m.up = true;
+//			m.left = m.right = m.down = false;
+//		}
+//		else {
+//			m.down = true;
+//			m.left = m.right = m.up = false;
+//		}
+//	}
+//
+//	FloatRect get_bounding_box() const {
+//		CircleShape shape(15.f);
+//		shape.setPosition(p.x, p.y);
+//		return shape.getGlobalBounds();
+//	}
+//
+//	void move(const pacman pacman, const wall& wall)
+//	{
+//		if (wall.check_collision(get_bounding_box())) {
+//			change_direction(); // Zmiana kierunku po kolizji
+//		}
+//		if (static_cast<int>(floor(sqrt(pow(pacman.get_position().x, 2) + pow(pacman.get_position().y, 2)))) % 200 == 0) { //Wylosuj nowy kierunek po przejechaniu 200 jednostek przez pacmana
+//			const float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+//			if (r < 0.25) {
+//				m.down = true;
+//				m.right = m.up = m.down = false;
+//			}
+//			else if (r < 0.5 && r >= 0.25)
+//			{
+//				m.left = true;
+//				m.right = m.up = m.down = false;
+//			}
+//			else if (r < 0.75 && r >= 0.5)
+//			{
+//				m.right = true;
+//				m.left = m.up = m.down = false;
+//			}
+//			else
+//			{
+//				m.up = true;
+//				m.left = m.right = m.down = false;
+//			}
+//		}
+//		if (get_position().x <= 1) p.x += SPEED / 2.;
+//		if (get_position().x >= WIDTH - 41) p.x -= SPEED / 2.;
+//		if (get_position().y <= 1) p.y += SPEED / 2.;
+//		if (get_position().y >= HEIGHT - 41) p.y -= SPEED / 2.;
+//		if (m.left) p.x -= SPEED / 2.;
+//		if (m.right) p.x += SPEED / 2.;
+//		if (m.up) p.y -= SPEED / 2.;
+//		if (m.down) p.y += SPEED / 2.;
+//
+//	}
+//	Color get_color() const
+//
+//	{
+//		return color1;
+//	}
+//	
+//
+//	
+//	void draw(RenderWindow& window) const
+//	{
+//		CircleShape shape(15.f);
+//		shape.setFillColor(get_color());
+//		shape.setPosition(p.x, p.y);
+//		window.draw(shape);
+//	}
+//};
 
 class ghost : public pacman
 {
@@ -176,94 +282,217 @@ private:
 		bool up;
 		bool down;
 	};
+	movement currentDirection;
+	bool isBlocked;  // Flaga informujaca, czy duszek jest zablokowany przez sciane
+
 public:
-	movement m{};
-	ghost(const float x, const float y, const Color color)
+	ghost(const int x, const int y, const Color color)
 	{
 		p.x = x;
 		p.y = y;
 		color1 = color;
+		currentDirection = { false, true, false, false }; // Domyslny kierunek: w prawo
+		isBlocked = false;  // Poczatkowo duszek nie jest zablokowany
 	}
 
+	// Funkcja zmieniajaca kierunek o 90 stopni zgodnie z ruchem wskazowek zegara
 	void change_direction() {
+		if (currentDirection.left) {
+			currentDirection.left = false;
+			currentDirection.up = true;
+			currentDirection.right = false;
+			currentDirection.down = false;
+		}
+		else if (currentDirection.up) {
+			currentDirection.left = false;
+			currentDirection.up = false;
+			currentDirection.right = true;
+			currentDirection.down = false;
+		}
+		else if (currentDirection.right) {
+			currentDirection.left = false;
+			currentDirection.up = false;
+			currentDirection.right = false;
+			currentDirection.down = true;
+		}
+		else if (currentDirection.down) {
+			currentDirection.left = true;
+			currentDirection.up = false;
+			currentDirection.right = false;
+			currentDirection.down = false;
+		}
+	}
+	
+	// Funkcja sprawdzajaca, czy duszek ma zblizyæ sie do PacMana
+	void move_towards_pacman(const pacman& pacman, const labirynth& labirynth)
+	{
+		// Obliczanie roznicy pozycji w obu osiach
+		float dx = pacman.get_position().x - p.x;
+		float dy = pacman.get_position().y - p.y;
 
-		// Losowa zmiana kierunku o 90 stopni
-		const int direction = rand() % 4;
-		if (direction == 0) {
-			m.left = true;
-			m.right = m.up = m.down = false;
+		// Normalizacja wektora kierunku
+		float distance = sqrt(dx * dx + dy * dy); // Odleglosæ do PacMana
+		dx /= distance;
+		dy /= distance;
+
+		// Zmiana kierunku na podstawie PacMana
+		if (abs(dx) > abs(dy)) { // Jezeli ruch w osi X jest wiekszy
+			if (dx > 0) {
+				currentDirection.left = false;
+				currentDirection.right = true;
+			}
+			else {
+				currentDirection.left = true;
+				currentDirection.right = false;
+			}
+			currentDirection.up = false;
+			currentDirection.down = false;
 		}
-		else if (direction == 1) {
-			m.right = true;
-			m.left = m.up = m.down = false;
+		else { // Jezeli ruch w osi Y jest wiekszy
+			if (dy > 0) {
+				currentDirection.down = true;
+				currentDirection.up = false;
+			}
+			else {
+				currentDirection.up = true;
+				currentDirection.down = false;
+			}
+			currentDirection.left = false;
+			currentDirection.right = false;
 		}
-		else if (direction == 2) {
-			m.up = true;
-			m.left = m.right = m.down = false;
+
+		// Sprawdzanie kolizji w wybranym kierunku
+		if (currentDirection.left && !wall_collision_left(labirynth)) {
+			p.x -= SPEED / 2.0; // Ruch w lewo
+		}
+		else if (currentDirection.right && !wall_collision_right(labirynth)) {
+			p.x += SPEED / 2.0; // Ruch w prawo
+		}
+		else if (currentDirection.up && !wall_collision_up(labirynth)) {
+			p.y -= SPEED / 2.0; // Ruch w gore
+		}
+		else if (currentDirection.down && !wall_collision_down(labirynth)) {
+			p.y += SPEED / 2.0; // Ruch w dol
 		}
 		else {
-			m.down = true;
-			m.left = m.right = m.up = false;
+			// Jesli napotka sciane w wybranym kierunku, sprobuj innego
+			if (currentDirection.left && wall_collision_left(labirynth)) {
+				// Sprawd inne kierunki
+				if (!wall_collision_up(labirynth)) {
+					p.y -= SPEED / 2.0; // Ruch w gore
+				}
+				else if (!wall_collision_down(labirynth)) {
+					p.y += SPEED / 2.0; // Ruch w dol
+				}
+				else if (!wall_collision_right(labirynth)) {
+					p.x += SPEED / 2.0; // Ruch w prawo
+				}
+			}
+			else if (currentDirection.right && wall_collision_right(labirynth)) {
+				// Sprawd inne kierunki
+				if (!wall_collision_up(labirynth)) {
+					p.y -= SPEED / 2.0; // Ruch w gore
+				}
+				else if (!wall_collision_down(labirynth)) {
+					p.y += SPEED / 2.0; // Ruch w dol
+				}
+				else if (!wall_collision_left(labirynth)) {
+					p.x -= SPEED / 2.0; // Ruch w lewo
+				}
+			}
+			else if (currentDirection.up && wall_collision_up(labirynth)) {
+				// Sprawd inne kierunki
+				if (!wall_collision_left(labirynth)) {
+					p.x -= SPEED / 2.0; // Ruch w lewo
+				}
+				else if (!wall_collision_right(labirynth)) {
+					p.x += SPEED / 2.0; // Ruch w prawo
+				}
+				else if (!wall_collision_down(labirynth)) {
+					p.y += SPEED / 2.0; // Ruch w dol
+				}
+			}
+			else if (currentDirection.down && wall_collision_down(labirynth)) {
+				// Sprawd inne kierunki
+				if (!wall_collision_left(labirynth)) {
+					p.x -= SPEED / 2.0; // Ruch w lewo
+				}
+				else if (!wall_collision_right(labirynth)) {
+					p.x += SPEED / 2.0; // Ruch w prawo
+				}
+				else if (!wall_collision_up(labirynth)) {
+					p.y -= SPEED / 2.0; // Ruch w gore
+				}
+			}
 		}
+		
+		// Sprawdzanie kolizji z granicami ekranu
+		if (get_position().x <= 1) p.x += SPEED / 2.0;
+		if (get_position().x >= WIDTH - 41) p.x -= SPEED / 2.0;
+		if (get_position().y <= 1) p.y += SPEED / 2.0;
+		if (get_position().y >= HEIGHT - 41) p.y -= SPEED / 2.0;
 	}
 
-	FloatRect get_bounding_box() const {
-		CircleShape shape(15.f);
-		shape.setPosition(p.x, p.y);
-		return shape.getGlobalBounds();
-	}
-
-	void move(const pacman pacman, const wall& wall)
-	{
-		if (wall.check_collision(get_bounding_box())) {
-			change_direction(); // Zmiana kierunku po kolizji
+	// Sprawdzanie kolizji w lewo
+	bool wall_collision_left(const labirynth& labirynth) {
+		FloatRect ghostBounds = get_bounding_box();
+		ghostBounds.left -= SPEED / 2.0;
+		for (const auto& wall : labirynth.get_walls()) {
+			if (wall.check_collision(ghostBounds)) return true;
 		}
-		if (static_cast<int>(floor(sqrt(pow(pacman.get_position().x, 2) + pow(pacman.get_position().y, 2)))) % 200 == 0) { //Wylosuj nowy kierunek po przejechaniu 200 jednostek przez pacmana
-			const float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-			if (r < 0.25) {
-				m.down = true;
-				m.right = m.up = m.down = false;
-			}
-			else if (r < 0.5 && r >= 0.25)
-			{
-				m.left = true;
-				m.right = m.up = m.down = false;
-			}
-			else if (r < 0.75 && r >= 0.5)
-			{
-				m.right = true;
-				m.left = m.up = m.down = false;
-			}
-			else
-			{
-				m.up = true;
-				m.left = m.right = m.down = false;
-			}
+		return false;
+	}
+
+	// Sprawdzanie kolizji w prawo
+	bool wall_collision_right(const labirynth& labirynth) {
+		FloatRect ghostBounds = get_bounding_box();
+		ghostBounds.left += SPEED / 2.0;
+		for (const auto& wall : labirynth.get_walls()) {
+			if (wall.check_collision(ghostBounds)) return true;
 		}
-		if (get_position().x <= 1) p.x += SPEED / 2.;
-		if (get_position().x >= WIDTH - 41) p.x -= SPEED / 2.;
-		if (get_position().y <= 1) p.y += SPEED / 2.;
-		if (get_position().y >= HEIGHT - 41) p.y -= SPEED / 2.;
-		if (m.left) p.x -= SPEED / 2.;
-		if (m.right) p.x += SPEED / 2.;
-		if (m.up) p.y -= SPEED / 2.;
-		if (m.down) p.y += SPEED / 2.;
-
+		return false;
 	}
-	Color get_color() const
 
-	{
-		return color1;
+	// Sprawdzanie kolizji w gore
+	bool wall_collision_up(const labirynth& labirynth) {
+		FloatRect ghostBounds = get_bounding_box();
+		ghostBounds.top -= SPEED / 2.0;
+		for (const auto& wall : labirynth.get_walls()) {
+			if (wall.check_collision(ghostBounds)) return true;
+		}
+		return false;
 	}
-	
 
-	
+	// Sprawdzanie kolizji w dol
+	bool wall_collision_down(const labirynth& labirynth) {
+		FloatRect ghostBounds = get_bounding_box();
+		ghostBounds.top += SPEED / 2.0;
+		for (const auto& wall : labirynth.get_walls()) {
+			if (wall.check_collision(ghostBounds)) return true;
+		}
+		return false;
+	}
+
+	// Rysowanie duszka
 	void draw(RenderWindow& window) const
 	{
 		CircleShape shape(15.f);
 		shape.setFillColor(get_color());
 		shape.setPosition(p.x, p.y);
 		window.draw(shape);
+	}
+
+	// Uzyskiwanie koloru duszka
+	Color get_color() const
+	{
+		return color1;
+	}
+
+	// Uzyskiwanie bounding box dla duszka
+	FloatRect get_bounding_box() const {
+		CircleShape shape(15.f);
+		shape.setPosition(p.x, p.y);
+		return shape.getGlobalBounds();
 	}
 };
 
@@ -513,6 +742,21 @@ void display_menu(RenderWindow& window, Font& font, int& choice) {
 	author.setFillColor(Color::White);
 	author.setPosition(WIDTH / 2 - author.getGlobalBounds().width / 2, 600);
 
+
+	ConvexShape animated_shape;
+	animated_shape.setPointCount(5); // Przykład nieregularnego kształtu
+	animated_shape.setPoint(0, Vector2f(0, 0));
+	animated_shape.setPoint(1, Vector2f(40, 10));
+	animated_shape.setPoint(2, Vector2f(30, 40));
+	animated_shape.setPoint(3, Vector2f(10, 50));
+	animated_shape.setPoint(4, Vector2f(0, 30));
+	animated_shape.setFillColor(Color::Red);
+	animated_shape.setPosition(WIDTH - 100, HEIGHT - 100); // Pozycja w prawym dolnym rogu
+
+	float rotation_angle = 0.05f; // Prędkość obrotu
+	float move_delta = 0.05f;     // Prędkość ruchu
+	float direction = 0.1f;      // Kierunek ruchu (1 - w górę, -1 - w dół)
+
 	while (window.isOpen()) {
 		Event event;
 		while (window.pollEvent(event)) {
@@ -525,6 +769,14 @@ void display_menu(RenderWindow& window, Font& font, int& choice) {
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
 				window.close(); // Quit the game
 		}
+
+		animated_shape.rotate(rotation_angle);
+		Vector2f current_position = animated_shape.getPosition();
+		if (current_position.y <= HEIGHT - 120 || current_position.y >= HEIGHT - 80) {
+			direction = -direction; // Odwróć kierunek ruchu
+		}
+
+		animated_shape.move( 0 ,direction * move_delta);
 		window.clear();
 		window.draw(background_sprite);
 		window.draw(dark_background);
@@ -532,18 +784,22 @@ void display_menu(RenderWindow& window, Font& font, int& choice) {
 		window.draw(start_text);
 		window.draw(quit_text);
 		window.draw(author);
+		window.draw(animated_shape);
 		window.display();
 	}
 }
 
+
 int main() {
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "PacMan");
 	pacman p;
+	
 	ghost g(40, 40, Color::Green);
 	ghost g1(1180, 40, Color::Red);
 	ghost g2(40, 640, Color::Cyan);
 	ghost g3(1180, 640, Color::White);
 	ghost g4(40, 40, Color::Magenta);
+	
 
 	punkty punkty;
 	labirynth labirynth;
@@ -611,11 +867,11 @@ int main() {
 				if (wall.check_collision(g3.get_bounding_box())) g3.change_direction();
 				if (wall.check_collision(g4.get_bounding_box())) g4.change_direction();
 			}
-			g.move(p, wall(0, 0, 0, 0));  // Duszki uzywaja swojej logiki
-			g1.move(p, wall(0, 0, 0, 0)); // Uzycie pustego walla, bo logika jest w glownym
-			g2.move(p, wall(0, 0, 0, 0));
-			g3.move(p, wall(0, 0, 0, 0));
-			g4.move(p, wall(0, 0, 0, 0));
+			g.move_towards_pacman(p, labirynth);  // Duszki uzywaja swojej logiki
+			g1.move_towards_pacman(p, labirynth); // Uzycie pustego walla, bo logika jest w glownym
+			g2.move_towards_pacman(p, labirynth);
+			g3.move_towards_pacman(p, labirynth);
+			g4.move_towards_pacman(p,labirynth);
 		}
 
 		// Rysowanie
@@ -630,6 +886,7 @@ int main() {
 		g3.draw(window);
 		g4.draw(window);
 		p.draw(window);
+		
 
 		if (is_paused) {
 			window.draw(dark_background);
