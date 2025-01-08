@@ -622,7 +622,6 @@ int main() {
 		window.clear();
 		punkty.draw(window);
 		score_text.setString("Score: " + to_string(score));
-		
 		labirynth.draw(window);
 		window.draw(score_text);
 		g.draw(window);
