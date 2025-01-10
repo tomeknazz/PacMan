@@ -39,7 +39,7 @@ public:
 	void add_wall(float x, float y, float width, float height) {
 		walls.emplace_back(x, y, width, height);
 	}
-
+	
 	// Sprawdza kolizje z dowolna sciana w labiryncie
 	bool check_collision(const FloatRect& bounding_box) const {
 		for (const auto& wall : walls) {
@@ -59,6 +59,9 @@ public:
 
 	const std::vector<wall>& get_walls() const {
 		return walls;
+	}
+	void clear_walls() {
+		walls.clear();
 	}
 };
 
@@ -294,6 +297,9 @@ public:
 		currentDirection = { false, true, false, false }; // Domyslny kierunek: w prawo
 		isBlocked = false;  // Poczatkowo duszek nie jest zablokowany
 	}
+	bool check_collision_with_pacman(const pacman& pacman) const {
+		return get_bounding_box().intersects(pacman.get_bounding_box());
+	}
 
 	// Funkcja zmieniajaca kierunek o 90 stopni zgodnie z ruchem wskazowek zegara
 	void change_direction() {
@@ -519,6 +525,7 @@ class punkty {
 private:
 	vector<punkt> points; // Przechowywanie punktow
 public:
+	
 	// Dodaje punkt do wektora
 	void add_punkt(float x, float y, float radius = 10.f) {
 		points.emplace_back(x, y, radius);
@@ -544,6 +551,9 @@ public:
 	// Zwraca wektor punktow
 	const vector<punkt>& get_punkty() const {
 		return points;
+	}
+	void clear() {
+		points.clear();
 	}
 };
 
@@ -789,16 +799,65 @@ void display_menu(RenderWindow& window, Font& font, int& choice) {
 	}
 }
 
+void display_game_over(RenderWindow& window, Font& font, int score) {
+	Text game_over_text, return_to_menu_text, score_text;
+	game_over_text.setFont(font);
+	game_over_text.setString("Game Over");
+	game_over_text.setCharacterSize(60);
+	game_over_text.setFillColor(Color::Red);
+	game_over_text.setPosition(WIDTH / 2 - game_over_text.getGlobalBounds().width / 2, 200);
+
+	return_to_menu_text.setFont(font);
+	return_to_menu_text.setString("Press Escape to return to menu");
+	return_to_menu_text.setCharacterSize(30);
+	return_to_menu_text.setFillColor(Color::White);
+	return_to_menu_text.setPosition(WIDTH / 2 - return_to_menu_text.getGlobalBounds().width / 2, 400);
+
+	score_text.setFont(font);
+	score_text.setString("Score: " + to_string(score));
+	score_text.setCharacterSize(40);
+	score_text.setFillColor(Color::Yellow);
+	score_text.setPosition(WIDTH / 2 - score_text.getGlobalBounds().width / 2, 300);
+
+	RectangleShape dark_background(Vector2f(WIDTH, HEIGHT));
+	dark_background.setFillColor(Color(0, 0, 0, 200)); // Semi-transparent background
+
+	while (window.isOpen()) {
+		Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == Event::Closed)
+				window.close();
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+				return; // Exit the "Game Over" screen
+		}
+
+		window.clear();
+		window.draw(dark_background);
+		window.draw(game_over_text);
+		window.draw(score_text);
+		window.draw(return_to_menu_text);
+		window.display();
+	}
+}
+
+void reset_game_state(punkty& punkty, labirynth& labirynth, int& score) {
+	punkty.clear(); // Wyczyszczenie punktów
+	labirynth.clear_walls(); // Wyczyszczenie ścian labiryntu
+	score = 0; // Zresetowanie wyniku
+}
+
+
+
+
 
 int main() {
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "PacMan");
 	pacman p;
-	
 	ghost g(40, 40, Color::Green);
 	ghost g1(1180, 40, Color::Red);
 	ghost g2(40, 640, Color::Cyan);
 	ghost g3(1180, 640, Color::White);
-	ghost g4(40, 40, Color::Magenta);
+	
 	
 
 	punkty punkty;
@@ -865,13 +924,48 @@ int main() {
 				if (wall.check_collision(g1.get_bounding_box())) g1.change_direction();
 				if (wall.check_collision(g2.get_bounding_box())) g2.change_direction();
 				if (wall.check_collision(g3.get_bounding_box())) g3.change_direction();
-				if (wall.check_collision(g4.get_bounding_box())) g4.change_direction();
+				
 			}
 			g.move_towards_pacman(p, labirynth);  // Duszki uzywaja swojej logiki
 			g1.move_towards_pacman(p, labirynth); // Uzycie pustego walla, bo logika jest w glownym
 			g2.move_towards_pacman(p, labirynth);
 			g3.move_towards_pacman(p, labirynth);
-			g4.move_towards_pacman(p,labirynth);
+			
+			if (g.check_collision_with_pacman(p) ||
+				g1.check_collision_with_pacman(p) ||
+				g2.check_collision_with_pacman(p) ||
+				g3.check_collision_with_pacman(p))
+			{
+				cout << "Pac-Man został złapany!\n";
+
+				// Reset pozycji Pac-Mana
+				p.p.x = 550;
+				p.p.y = 645;
+
+			
+
+				display_game_over(window, font, score);
+				display_menu(window, font, choice);
+				if (choice == 0)
+					window.close();
+
+				reset_game_state(punkty, labirynth, score);
+
+				// Wczytaj mapę zgodnie z wyborem
+				switch (choice) {
+				case 1:
+					map1(labirynth, punkty);
+					break;
+				case 2:
+					map2(labirynth, punkty);
+					break;
+				case 3:
+					map3(labirynth, punkty);
+					break;
+				}
+				score = 0; // Zresetuj wynik
+			}
+			
 		}
 
 		// Rysowanie
@@ -884,7 +978,7 @@ int main() {
 		g1.draw(window);
 		g2.draw(window);
 		g3.draw(window);
-		g4.draw(window);
+		
 		p.draw(window);
 		
 
