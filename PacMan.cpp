@@ -863,11 +863,11 @@ Texture load_texture(const string& filename) {
 int main() {
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "PacMan");
 
-	pacman p(550,645,load_texture("pacman1.png"));
-	ghost g(40, 40, load_texture("pacman1.png"));
-	ghost g1(1180, 40, load_texture("pacman1.png"));
-	ghost g2(40, 640, load_texture("pacman1.png"));
-	ghost g3(1180, 640, load_texture("pacman1.png"));
+	pacman p(550,645,load_texture("pacman.png"));
+	ghost g(40, 40, load_texture("ghost1.png"));
+	ghost g1(1180, 40, load_texture("ghost2.png"));
+	ghost g2(40, 640, load_texture("ghost1.png"));
+	ghost g3(1180, 640, load_texture("ghost2.png"));
 
 	punkty punkty;
 	labirynth labirynth;
