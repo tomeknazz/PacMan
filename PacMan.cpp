@@ -88,11 +88,19 @@ private:
 public:
 	position p;
 	movement m{};
+	Texture texture;
 	pacman()
 	{
 		p.x = 550;
 		p.y = 645;
 		speed = SPEED;
+	}
+	pacman(const int x, const int y, const Texture &texture1)
+	{
+		p.x = x;
+		p.y = y;
+		speed = SPEED;
+		texture = texture1;
 	}
 	
 
@@ -158,13 +166,13 @@ public:
 	}
 	
 
-	void draw(RenderWindow& window) const
-	{
-		CircleShape shape(15.f);
-		shape.setFillColor(Color::Yellow);
-		shape.setPosition(p.x, p.y);
-		window.draw(shape);
-	}
+    void draw(RenderWindow& window) const
+    {
+        CircleShape shape(15.f);
+        shape.setTexture(&texture);
+        shape.setPosition(p.x, p.y);
+        window.draw(shape);
+    }
 
 	position get_position() const
 	{
@@ -276,8 +284,7 @@ public:
 
 class ghost : public pacman
 {
-private:
-	Color color1;
+private:;
 	struct movement
 	{
 		bool left;
@@ -289,14 +296,16 @@ private:
 	bool isBlocked;  // Flaga informujaca, czy duszek jest zablokowany przez sciane
 
 public:
-	ghost(const int x, const int y, const Color color)
+	Texture texture2;
+	ghost(const int x, const int y, const Texture &color)
 	{
 		p.x = x;
 		p.y = y;
-		color1 = color;
-		currentDirection = { false, true, false, false }; // Domyslny kierunek: w prawo
-		isBlocked = false;  // Poczatkowo duszek nie jest zablokowany
+		texture2 = color;
+		currentDirection = {false, true, false, false}; // Domyslny kierunek: w prawo
+		isBlocked = false; // Poczatkowo duszek nie jest zablokowany
 	}
+
 	bool check_collision_with_pacman(const pacman& pacman) const {
 		return get_bounding_box().intersects(pacman.get_bounding_box());
 	}
@@ -483,16 +492,12 @@ public:
 	void draw(RenderWindow& window) const
 	{
 		CircleShape shape(15.f);
-		shape.setFillColor(get_color());
+		shape.setTexture(&texture2);
 		shape.setPosition(p.x, p.y);
 		window.draw(shape);
 	}
 
 	// Uzyskiwanie koloru duszka
-	Color get_color() const
-	{
-		return color1;
-	}
 
 	// Uzyskiwanie bounding box dla duszka
 	FloatRect get_bounding_box() const {
@@ -846,19 +851,23 @@ void reset_game_state(punkty& punkty, labirynth& labirynth, int& score) {
 	score = 0; // Zresetowanie wyniku
 }
 
-
-
-
+Texture load_texture(const string& filename) {
+	Texture texture;
+	if (!texture.loadFromFile(filename)) {
+		cerr << "Failed to load texture: " << filename << endl;
+		exit(-1);
+	}
+	return texture;
+}
 
 int main() {
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "PacMan");
-	pacman p;
-	ghost g(40, 40, Color::Green);
-	ghost g1(1180, 40, Color::Red);
-	ghost g2(40, 640, Color::Cyan);
-	ghost g3(1180, 640, Color::White);
-	
-	
+
+	pacman p(550,645,load_texture("pacman1.png"));
+	ghost g(40, 40, load_texture("pacman1.png"));
+	ghost g1(1180, 40, load_texture("pacman1.png"));
+	ghost g2(40, 640, load_texture("pacman1.png"));
+	ghost g3(1180, 640, load_texture("pacman1.png"));
 
 	punkty punkty;
 	labirynth labirynth;
@@ -936,13 +945,11 @@ int main() {
 				g2.check_collision_with_pacman(p) ||
 				g3.check_collision_with_pacman(p))
 			{
-				cout << "Pac-Man został złapany!\n";
+				cout << "Pac-Man zostal zlapany!\n";
 
 				// Reset pozycji Pac-Mana
 				p.p.x = 550;
 				p.p.y = 645;
-
-			
 
 				display_game_over(window, font, score);
 				display_menu(window, font, choice);
