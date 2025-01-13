@@ -65,7 +65,7 @@ public:
 	}
 };
 
-class pacman 
+class pacman
 {
 private:
 	struct position
@@ -84,26 +84,30 @@ private:
 		bool down;
 	};
 
-	
 public:
 	position p;
 	movement m{};
 	Texture texture;
+
 	pacman()
 	{
 		p.x = 550;
 		p.y = 645;
 		speed = SPEED;
 	}
-	pacman(const int x, const int y, const Texture &texture1)
+
+	pacman(const int x, const int y, const Texture& texture1)
 	{
 		p.x = x;
 		p.y = y;
 		speed = SPEED;
 		texture = texture1;
 	}
-	
 
+	void setTexture(const Texture& newTexture)
+	{
+		texture = newTexture;
+	}
 
 	void move()
 	{
@@ -164,15 +168,14 @@ public:
 		shape.setPosition(p.x, p.y);
 		return shape.getGlobalBounds();
 	}
-	
 
-    void draw(RenderWindow& window) const
-    {
-        CircleShape shape(15.f);
-        shape.setTexture(&texture);
-        shape.setPosition(p.x, p.y);
-        window.draw(shape);
-    }
+	void draw(RenderWindow& window) const
+	{
+		CircleShape shape(15.f);
+		shape.setPosition(p.x, p.y);
+		shape.setTexture(&texture); // Set the texture
+		window.draw(shape);
+	}
 
 	position get_position() const
 	{
@@ -792,7 +795,7 @@ Texture load_texture(const string& filename) {
 int main() {
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "PacMan");
 
-	pacman p(550,645,load_texture("pacman.png"));
+	pacman p(550, 645, load_texture("pacman.png"));
 	ghost g(40, 40, load_texture("ghost1.png"));
 	ghost g1(1180, 40, load_texture("ghost2.png"));
 	ghost g2(40, 640, load_texture("ghost1.png"));
@@ -806,7 +809,7 @@ int main() {
 
 	// Load font for displaying "Paused" text
 	Font font;
-	Text paused_text, continue_text, help_text, quit_text, confirmation,score_text;
+	Text paused_text, continue_text, help_text, quit_text, confirmation, score_text;
 	generate_pause_text(font, paused_text, continue_text, help_text, quit_text, confirmation);
 
 	//score text
@@ -862,13 +865,12 @@ int main() {
 				if (wall.check_collision(g1.get_bounding_box())) g1.change_direction();
 				if (wall.check_collision(g2.get_bounding_box())) g2.change_direction();
 				if (wall.check_collision(g3.get_bounding_box())) g3.change_direction();
-				
 			}
 			g.move_towards_pacman(p, labirynth);  // Duszki uzywaja swojej logiki
 			g1.move_towards_pacman(p, labirynth); // Uzycie pustego walla, bo logika jest w glownym
 			g2.move_towards_pacman(p, labirynth);
 			g3.move_towards_pacman(p, labirynth);
-			
+
 			if (g.check_collision_with_pacman(p) ||
 				g1.check_collision_with_pacman(p) ||
 				g2.check_collision_with_pacman(p) ||
@@ -901,7 +903,12 @@ int main() {
 				}
 				score = 0; // Zresetuj wynik
 			}
-			
+
+			// Example of changing the texture dynamically
+			if (score == 4) {
+				Texture new_texture = load_texture("pacman_left/0.png");
+				p.setTexture(new_texture);
+			}
 		}
 
 		// Rysowanie
@@ -914,9 +921,7 @@ int main() {
 		g1.draw(window);
 		g2.draw(window);
 		g3.draw(window);
-		
 		p.draw(window);
-		
 
 		if (is_paused) {
 			window.draw(dark_background);
@@ -937,7 +942,6 @@ int main() {
 	}
 	return 0;
 }
-
 void map1(labirynth& l, punkty& punkty)
 
 {
