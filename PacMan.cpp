@@ -383,6 +383,7 @@ public:
 		if (currentDirection.left && !wall_collision_left(labirynth)) {
 			p.x -= SPEED / 2.0; // Ruch w lewo
 		}
+		
 		else if (currentDirection.right && !wall_collision_right(labirynth)) {
 			p.x += SPEED / 2.0; // Ruch w prawo
 		}
@@ -564,6 +565,7 @@ public:
 		points.clear();
 	}
 };
+
 
 
 void map1(labirynth& l, punkty& punkty);
@@ -942,6 +944,7 @@ int main() {
 	}
 	return 0;
 }
+
 void map1(labirynth& l, punkty& punkty)
 
 {
