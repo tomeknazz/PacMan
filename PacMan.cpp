@@ -19,14 +19,13 @@ void fill_with_punkty(punkty& punkty, const float x, const float y, const int k,
 	}
 }
 
-queue<Text> insert_to_q(queue<Text>& q, const Text& text1, const Text& text2, const Text& text3, const Text& text4, const Text& text5)
+void insert_to_q(queue<Text>& q, const Text& text1, const Text& text2, const Text& text3, const Text& text4, const Text& text5)
 {
 	q.push(text1);
 	q.push(text2);
 	q.push(text3);
 	q.push(text4);
 	q.push(text5);
-	return q;
 }
 
 void generate_pause_text(Font& font, Text& paused_text, Text& continue_text, Text& help_text, Text& quit_text, Text& confirmation) {
@@ -77,7 +76,6 @@ void generate_pause_text(Font& font, Text& paused_text, Text& continue_text, Tex
     texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 500);
 	confirmation = texts.front();
     texts.pop();
-	texts.empty();
 
 }
 
