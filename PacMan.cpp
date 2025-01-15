@@ -4,9 +4,6 @@
 #include <queue>
 #include "moving_characters.h"
 
-using namespace std;
-using namespace sf;
-
 void map1(labirynth& l, punkty& punkty);
 void map2(labirynth& l, punkty& punkty);
 void map3(labirynth& l, punkty& punkty);
