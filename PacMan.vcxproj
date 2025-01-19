@@ -135,12 +135,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="map_func.cpp" />
     <ClCompile Include="moving_characters.h" />
     <ClCompile Include="PacMan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
-    <ClInclude Include="map.h" />
+    <ClInclude Include="map_class.h" />
+    <ClInclude Include="map_func.h" />
     <ClInclude Include="points.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

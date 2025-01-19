@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "constants.h"
-#include "map.h"
+#include "map_class.h"
 
 class pacman
 {

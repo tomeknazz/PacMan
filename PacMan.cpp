@@ -2,19 +2,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <queue>
+#include <fstream>
 #include "moving_characters.h"
-
-void map1(labirynth& l, punkty& punkty);
-void map2(labirynth& l, punkty& punkty);
-void map3(labirynth& l, punkty& punkty);
-
-void fill_with_punkty(punkty& punkty, const float x, const float y, const int k, const int w, const float distance) {
-	for (int i = 0; i < k; i++) {
-		punkty.add_punkt(x + i * distance, y);
-		for (int j = 0; j < w; j++)
-			punkty.add_punkt(x + i * distance, y + j * distance);
-	}
-}
+#include "map_func.h"
 
 void insert_to_q(queue<Text>& q, const Text& text1, const Text& text2, const Text& text3, const Text& text4, const Text& text5)
 {
@@ -34,88 +24,122 @@ void generate_pause_text(Font& font, Text& paused_text, Text& continue_text, Tex
 	insert_to_q(texts, paused_text, continue_text, help_text, quit_text, confirmation);
 
 
-    texts.front().setFont(font);
-    texts.front().setString("Game Paused");
-    texts.front().setCharacterSize(60);
-    texts.front().setFillColor(Color::White);
-    texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 50);
+	texts.front().setFont(font);
+	texts.front().setString("Game Paused");
+	texts.front().setCharacterSize(60);
+	texts.front().setFillColor(Color::White);
+	texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 50);
 	paused_text = texts.front();
-    texts.pop();
+	texts.pop();
 
-    texts.front().setFont(font);
-    texts.front().setString("Press F1 to continue");
-    texts.front().setCharacterSize(30);
-    texts.front().setFillColor(Color::White);
-    texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 500);
+	texts.front().setFont(font);
+	texts.front().setString("Press F1 to continue");
+	texts.front().setCharacterSize(30);
+	texts.front().setFillColor(Color::White);
+	texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 500);
 	continue_text = texts.front();
-    texts.pop();
+	texts.pop();
 
-    texts.front().setFont(font);
-    texts.front().setString("\254Press F1 for help\n\254Use arrows to move\n\254Press escape to quit the game\n\nCollect the Points and avoid the Ghosts!");
-    texts.front().setCharacterSize(30);
-    texts.front().setFillColor(Color::White);
-    texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 200);
+	texts.front().setFont(font);
+	texts.front().setString("\254Press F1 for help\n\254Use arrows to move\n\254Press escape to quit the game\n\nCollect the Points and avoid the Ghosts!");
+	texts.front().setCharacterSize(30);
+	texts.front().setFillColor(Color::White);
+	texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 200);
 	help_text = texts.front();
-    texts.pop();
+	texts.pop();
 
-    texts.front().setFont(font);
-    texts.front().setString("Are you sure you want to quit?");
-    texts.front().setCharacterSize(60);
-    texts.front().setFillColor(Color::White);
-    texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 50);
+	texts.front().setFont(font);
+	texts.front().setString("Are you sure you want to quit?");
+	texts.front().setCharacterSize(60);
+	texts.front().setFillColor(Color::White);
+	texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 50);
 	quit_text = texts.front();
-    texts.pop();
+	texts.pop();
 
-    texts.front().setFont(font);
-    texts.front().setString("Press Y to quit or N to continue");
-    texts.front().setCharacterSize(30);
-    texts.front().setFillColor(Color::White);
-    texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 500);
+	texts.front().setFont(font);
+	texts.front().setString("Press Y to quit or N to continue");
+	texts.front().setCharacterSize(30);
+	texts.front().setFillColor(Color::White);
+	texts.front().setPosition(WIDTH / 2 - texts.front().getGlobalBounds().width / 2, 500);
 	confirmation = texts.front();
-    texts.pop();
+	texts.pop();
 
 }
 
-void choose_map(RenderWindow& window, Font& font, int& choice, Sprite& background_sprite, RectangleShape& dark_background, Text& title, Text& author) {
-	Text map_text;
+void choose_map(RenderWindow& window, Font& font, int& choice, Sprite& background_sprite, RectangleShape& dark_background, Text& title, Text& author, string& player_name) {
+	Text map_text, name_text, prompt_text;
 	map_text.setFont(font);
 	map_text.setString("1.  Map 1\n2. Map 2\n3. Map 3");
 	map_text.setCharacterSize(30);
 	map_text.setFillColor(Color::White);
 	map_text.setPosition(WIDTH / 2 - map_text.getGlobalBounds().width / 2, 300);
 
+	prompt_text.setFont(font);
+	prompt_text.setString("Enter your name: ");
+	prompt_text.setCharacterSize(30);
+	prompt_text.setFillColor(Color::White);
+	prompt_text.setPosition(WIDTH / 2 - prompt_text.getGlobalBounds().width / 2, 200);
+
+	name_text.setFont(font);
+	name_text.setCharacterSize(30);
+	name_text.setFillColor(Color::White);
+	name_text.setPosition(WIDTH / 2 - name_text.getGlobalBounds().width / 2 - 100, 250);
+
+	bool name_entered = false;
+	player_name = "";
+
 	while (window.isOpen()) {
 		Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == Event::Closed)
 				window.close();
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num1) {
-				choice = 1;
-				return;
+			if (event.type == Event::TextEntered && !name_entered) {
+				if (event.text.unicode == '\b' && !player_name.empty()) {
+					player_name.pop_back();
+				}
+				else if (event.text.unicode < 128 && event.text.unicode != '\b') {
+					player_name += static_cast<char>(event.text.unicode);
+				}
+				name_text.setString(player_name);
 			}
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num2) {
-				choice = 2;
-				return;
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Enter && !name_entered) {
+				name_entered = true;
 			}
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num3) {
-				choice = 3;
-				return;
+			if (name_entered) {
+				if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num1) {
+					choice = 1;
+					return;
+				}
+				if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num2) {
+					choice = 2;
+					return;
+				}
+				if (event.type == Event::KeyPressed && event.key.code == Keyboard::Num3) {
+					choice = 3;
+					return;
+				}
+				if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+					window.close(); // Quit the game
 			}
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
-				window.close(); // Quit the game
 		}
 
 		window.clear();
 		window.draw(background_sprite);
 		window.draw(dark_background);
 		window.draw(title);
-		window.draw(map_text);
+		if (!name_entered) {
+			window.draw(prompt_text);
+			window.draw(name_text);
+		}
+		else {
+			window.draw(map_text);
+		}
 		window.draw(author);
 		window.display();
 	}
 }
 
-void display_menu(RenderWindow& window, Font& font, int& choice) {
+void display_menu(RenderWindow& window, Font& font, int& choice, string& player_name) {
 	Texture background_texture;
 	if (!background_texture.loadFromFile("back1.png")) {
 		cerr << "Failed to load background image!" << endl;
@@ -171,7 +195,7 @@ void display_menu(RenderWindow& window, Font& font, int& choice) {
 			if (event.type == Event::Closed)
 				window.close();
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Enter) {
-				choose_map(window, font, choice, background_sprite, dark_background, title, author);
+				choose_map(window, font, choice, background_sprite, dark_background, title, author, player_name);
 				return;
 			}
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
@@ -184,7 +208,7 @@ void display_menu(RenderWindow& window, Font& font, int& choice) {
 			direction = -direction; // Odwróć kierunek ruchu
 		}
 
-		animated_shape.move( 0 ,direction * move_delta);
+		animated_shape.move(0, direction * move_delta);
 		window.clear();
 		window.draw(background_sprite);
 		window.draw(dark_background);
@@ -253,6 +277,69 @@ Texture load_texture(const string& filename) {
 	return texture;
 }
 
+void draw_high_scores(RenderWindow& window, Font& font) {
+	ifstream file("highscores.txt");
+	if (!file.is_open()) {
+		cerr << "Failed to open highscores file!" << endl;
+		return;
+	}
+
+	vector<pair<string, int>> scores;
+	string name;
+	int score;
+	while (file >> name >> score) {
+		scores.push_back(make_pair(name, score));
+	}
+	file.close();
+
+	sort(scores.begin(), scores.end(), [](const pair<string, int>& a, const pair<string, int>& b) {
+		return b.second < a.second;
+		});
+
+	Text title, score_text, cont;
+	title.setFont(font);
+	title.setString("High Scores");
+	title.setCharacterSize(60);
+	title.setFillColor(Color::White);
+	title.setPosition(WIDTH / 2 - title.getGlobalBounds().width / 2, 50);
+
+	window.clear();
+	window.draw(title);
+
+	int y_offset = 150;
+	int i = 0;
+	for (const auto& entry : scores) {
+		i++;
+		score_text.setFont(font);
+		score_text.setString(entry.first + ": " + to_string(entry.second));
+		score_text.setCharacterSize(25);
+		score_text.setFillColor(Color::White);
+		score_text.setPosition(WIDTH / 2 - score_text.getGlobalBounds().width / 2, y_offset);
+		window.draw(score_text);
+		y_offset += 40;
+		if (i == 12)
+			break;
+	}
+	cont.setFont(font);
+	cont.setString("Press Enter to continue");
+	cont.setCharacterSize(30);
+	cont.setFillColor(Color::White);
+	cont.setPosition(WIDTH / 2 - cont.getGlobalBounds().width / 2, 650);
+	window.draw(cont);
+
+	window.display();
+	Event event;
+	while (window.isOpen())
+	{
+		while (window.pollEvent(event))
+		{
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Enter)
+				return;
+		}
+		sleep(milliseconds(1));
+	}
+}
+
 int main() {
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "PacMan");
 
@@ -271,8 +358,16 @@ int main() {
 	// Load font for displaying "Paused" text
 	Font font;
 	Text paused_text, continue_text, help_text, quit_text, confirmation, score_text;
-	
+
 	generate_pause_text(font, paused_text, continue_text, help_text, quit_text, confirmation);
+
+	fstream file;
+	file.open("highscores.txt", ios::app);
+	if (!file.is_open()) {
+		cerr << "Failed to open file!" << endl;
+		exit(-1);
+	}
+
 
 	//score text
 	score_text.setFont(font);
@@ -283,8 +378,9 @@ int main() {
 	RectangleShape dark_background(Vector2f(WIDTH, HEIGHT));
 	dark_background.setFillColor(Color(0, 0, 0, 220)); // Semi-transparent dark background
 	int choice = 0;
+	string player_name;
 	// Display the menu
-	display_menu(window, font, choice);
+	display_menu(window, font, choice, player_name);
 
 	switch (choice) {
 	case 1:
@@ -309,7 +405,7 @@ int main() {
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::F1)
 				is_paused = !is_paused;
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
-				quit_confirmation = true;
+				quit_confirmation = !quit_confirmation;
 		}
 
 		if (!is_paused && !quit_confirmation) {
@@ -344,8 +440,12 @@ int main() {
 				p.p.x = 550;
 				p.p.y = 645;
 
+				file << player_name << " " << score;
+
 				display_game_over(window, font, score);
-				display_menu(window, font, choice);
+				draw_high_scores(window, font);
+
+				display_menu(window, font, choice, player_name);
 				if (choice == 0)
 					window.close();
 
@@ -366,11 +466,6 @@ int main() {
 				score = 0; // Zresetuj wynik
 			}
 
-			// Example of changing the texture dynamically
-			/*if (score == 4) {
-				Texture new_texture = load_texture("pacman_left/0.png");
-				p.setTexture(new_texture);
-			}*/
 		}
 
 		// Rysowanie
@@ -396,226 +491,15 @@ int main() {
 			window.draw(quit_text);
 			window.draw(confirmation);
 			if (Keyboard::isKeyPressed(Keyboard::Y))
+			{
+				draw_high_scores(window, font);
 				window.close();
+			}
 			if (Keyboard::isKeyPressed(Keyboard::N))
 				quit_confirmation = false;
 		}
 		window.display();
 	}
+	file.close();
 	return 0;
-}
-
-void map1(labirynth& l, punkty& punkty)
-
-{
-	fill_with_punkty(punkty, 50, 50, 24, 13, 50);
-
-	//ramki
-	l.add_wall(0, 0, 1270, 20); // sciana pozioma gorna
-	l.add_wall(0, 20, 20, 680); // sciana pionowa lewa
-	l.add_wall(0, 700, 1270, 20); // sciana pozioma dolna
-	l.add_wall(1250, 20, 20, 680); // sciana pionowa prawa
-	//4 rogi
-	//lewy gora
-	l.add_wall(100, 100, 20, 220); //pionowa
-	l.add_wall(120, 100, 100, 20); //pozioma
-	//lewy dol
-	l.add_wall(100, 400, 20, 220);//pionowa
-	l.add_wall(120, 600, 100, 20);//pozioma
-	//prawy gora
-	l.add_wall(1150, 100, 20, 220);//pionowa
-	l.add_wall(1050, 100, 100, 20);//pozioma
-
-	//prawy dol
-	l.add_wall(1150, 400, 20, 220); //pionowa
-	l.add_wall(1050, 600, 100, 20); //pozioma
-
-
-	//4 bolce pionowe
-	l.add_wall(300, 20, 20, 100); //lewy gora
-	l.add_wall(950, 20, 20, 100); //prawy gora
-	l.add_wall(300, 600, 20, 100); //lewy dol
-	l.add_wall(950, 600, 20, 100); //prawy dol
-
-	//6 bolce poziome
-	l.add_wall(200, 200, 120, 70); //lewy gorny
-	l.add_wall(200, 350, 200, 20); //lewy srodek
-	l.add_wall(200, 450, 120, 70); //lewy dol
-	l.add_wall(950, 200, 120, 70); //prawy gora
-	l.add_wall(870, 350, 200, 20); //prawy srodek
-	l.add_wall(950, 450, 120, 70); //prawy dol
-
-	//2 dlugie pionowe
-	l.add_wall(400, 200, 20, 320);//lewy
-	l.add_wall(850, 200, 20, 320);//prawy
-
-	//2 dlugie poziome
-	l.add_wall(400, 100, 470, 20);//gorny
-	l.add_wall(400, 600, 470, 20);//dolny
-
-	//srodek
-	l.add_wall(500, 120, 20, 200);//pionowy gorny
-	l.add_wall(500, 400, 20, 200);//pionowy dolny
-	l.add_wall(750, 120, 20, 200);
-	l.add_wall(750, 400, 20, 200);
-	l.add_wall(600, 350, 70, 20);
-	l.add_wall(600, 200, 70, 70);
-	l.add_wall(600, 450, 70, 70);
-
-}
-
-void map2(labirynth& l, punkty& punkty)
-{
-	fill_with_punkty(punkty, 50, 50, 11, 13, 50);
-	fill_with_punkty(punkty, 690, 50, 11, 13, 50);
-	fill_with_punkty(punkty, 620, 150, 1, 2, 150);
-	fill_with_punkty(punkty, 620, 400, 1, 2, 150);
-
-	//ramki
-
-	l.add_wall(0, 0, 1270, 20); // sciana pozioma gorna
-	l.add_wall(0, 20, 20, 680); // sciana pionowa lewa
-	l.add_wall(0, 700, 1270, 20); // sciana pozioma dolna
-	l.add_wall(1240, 20, 30, 680); // sciana pionowa prawa
-	///lewa strona
-	l.add_wall(100, 600, 120, 20);//poziomy
-	l.add_wall(100, 500, 20, 120);//pionowy
-
-	l.add_wall(300, 600, 20, 100);//pionowy
-
-	l.add_wall(400, 600, 100, 20);//poziomy
-	l.add_wall(500, 500, 20, 120);//pionowy
-	l.add_wall(400, 500, 20, 20);//kwadrat
-
-	l.add_wall(200, 500, 120, 20);//poziomy cienki
-	l.add_wall(200, 400, 20, 100);//pionowy 
-	l.add_wall(100, 400, 100, 20);//poziomy gruby
-
-	l.add_wall(300, 400, 120, 20);//poziomy lewy
-	l.add_wall(300, 200, 20, 200);//pionowy lewy
-	l.add_wall(500, 200, 20, 220);//pionowy prawy
-	l.add_wall(400, 300, 100, 20);//poziomy prawy
-	l.add_wall(400, 200, 20, 20);//kwadrat
-
-	l.add_wall(20, 300, 200, 20);//gruby poziomy
-	l.add_wall(200, 200, 20, 100);//pionowy dolny
-
-	l.add_wall(100, 100, 20, 120);//pionowy gorny
-
-	l.add_wall(120, 100, 100, 20);//poziomy gorny
-
-	l.add_wall(300, 20, 20, 100);//pionowy samotnik
-	l.add_wall(400, 100, 120, 20);//poziomy samotnik
-
-	//srodek
-	l.add_wall(600, 20, 60, 100);//gorny prostokat
-	l.add_wall(600, 200, 60, 70);//gorny kwadrat 
-	l.add_wall(600, 350, 60, 20);//srodkowy 
-	l.add_wall(600, 450, 60, 70);//dolny kwadrat
-	l.add_wall(600, 600, 60, 100);//dolny prostokat
-
-
-	//prawa strona
-	l.add_wall(740, 100, 120, 20);//poziomy lewy
-	l.add_wall(740, 120, 20, 100);//pionowy lewy
-	l.add_wall(840, 200, 20, 20);//kwadrat
-
-	l.add_wall(940, 20, 20, 100);//pionowy samotny
-	l.add_wall(1040, 100, 120, 20);//poziomy rog
-	l.add_wall(1140, 110, 20, 110);//pionowy rog
-
-	l.add_wall(940, 200, 120, 20);//poziomy
-	l.add_wall(1040, 220, 20, 100);//pionowy cienki
-	l.add_wall(1060, 300, 100, 20);//poziomy gruby
-
-	l.add_wall(740, 300, 20, 220);//pionowy
-	l.add_wall(760, 400, 100, 20);//poziomy
-	l.add_wall(840, 300, 120, 20);//pionowy
-	l.add_wall(940, 320, 20, 200);//poziomy
-	l.add_wall(840, 500, 20, 20);//kwadrat
-
-	l.add_wall(1040, 400, 200, 20);//gruby ze sciany
-	l.add_wall(1040, 410, 20, 110);//pionowy
-
-	l.add_wall(740, 600, 120, 20);//poziomy samotnik
-	l.add_wall(940, 600, 20, 100);//pionowy samotnik
-	l.add_wall(1040, 600, 120, 20);//poziomy
-	l.add_wall(1140, 500, 20, 120);
-}
-
-void map3(labirynth& l, punkty& punkty)
-{
-	fill_with_punkty(punkty, 50, 50, 24, 13, 50);
-	//ramki
-	l.add_wall(0, 0, 1270, 20); // sciana pozioma gorna
-	l.add_wall(0, 20, 20, 680); // sciana pionowa lewa
-	l.add_wall(0, 700, 1270, 20); // sciana pozioma dolna
-	l.add_wall(1250, 20, 20, 680); // sciana pionowa prawa
-
-	//lewy rog
-	l.add_wall(20, 500, 100, 20);//maly bolec ze sciany poziomy
-	l.add_wall(300, 400, 70, 20);//samotny poziomy
-
-	//niepelnosprawne f
-	l.add_wall(100, 600, 270, 20);//poziomy z f
-	l.add_wall(300, 500, 20, 100);//pionowy z f
-
-	//odwrocona elka
-	l.add_wall(200, 400, 20, 120);//pionowy z odwroconej elki
-	l.add_wall(90, 400, 110, 20);//poziomy z odwroconej elki
-
-	//kinole
-	l.add_wall(400, 500, 120, 20);//kinol dolny poziome
-	l.add_wall(450, 520, 20, 100);//kinol dolny pionowe
-
-	l.add_wall(450, 320, 20, 100);//kinol pionowe gorne
-	l.add_wall(400, 300, 120, 20);//kinol poziome gora
-
-	l.add_wall(400, 100, 120, 20);//kinol najwyzszy poziome
-	l.add_wall(450, 120, 20, 100);//kinol najwyzszy pionowe
-
-	//prawy rog
-	l.add_wall(900, 600, 120, 20); // poziomy dol 1
-	l.add_wall(1100, 600, 70, 20);//poziomy dol 2
-	l.add_wall(800, 500, 370, 20);//poziomy gora
-	l.add_wall(900, 400, 20, 100);//pionowy gora
-	l.add_wall(550, 400, 70, 20);
-	l.add_wall(1000, 400, 170, 20);
-	//niepelnosprawne f
-	l.add_wall(550, 600, 270, 20);//poziomy z f
-	l.add_wall(600, 500, 20, 100);//pionowy z f
-
-
-
-	//odwr elka
-	l.add_wall(700, 400, 20, 120);//pionowy z elki
-	l.add_wall(720, 400, 100, 20);//poziomy z elki
-
-	//srodek
-	l.add_wall(300, 220, 20, 100);//pionowy lewy
-	l.add_wall(300, 200, 70, 20);//poziomy lewy
-	l.add_wall(600, 220, 20, 100);//pionowy prawy
-	l.add_wall(550, 200, 70, 20);//poziomy prawy
-
-
-	//lewy gora
-	l.add_wall(100, 100, 20, 220);//pionowy
-	l.add_wall(120, 200, 100, 20);//poziomy
-	l.add_wall(200, 20, 20, 80);//pionowy lewy gora
-	l.add_wall(200, 100, 120, 20);//poziomy lewy gora
-	l.add_wall(200, 300, 20, 20);//kwadrat
-
-	//prawy gora
-	l.add_wall(600, 100, 120, 20);//poziomy prawy gora
-	l.add_wall(700, 20, 20, 80);//pionowy prawy gora
-	l.add_wall(700, 200, 100, 20);//poziomy
-	l.add_wall(800, 100, 20, 220);//pionowy
-	l.add_wall(700, 300, 20, 20);//kwadrat
-	//kwadrat duzy
-	l.add_wall(900, 100, 20, 220);//lewy bok
-	l.add_wall(920, 100, 250, 20);//gora
-	l.add_wall(1150, 100, 20, 220);//prawy bok
-	l.add_wall(900, 300, 70, 20);//lewy dol
-	l.add_wall(1050, 300, 100, 20);//prawy dol
-	l.add_wall(1000, 200, 70, 20);//kwadrat w srodku
 }

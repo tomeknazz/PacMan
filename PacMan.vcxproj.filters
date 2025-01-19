@@ -21,15 +21,21 @@
     <ClCompile Include="moving_characters.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="map_func.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="map.h">
+    <ClInclude Include="map_class.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="points.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="map_func.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
