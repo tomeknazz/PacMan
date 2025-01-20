@@ -148,7 +148,7 @@ public:
 		currentDirection = { false, true, false, false }; // Domyslny kierunek: w prawo
 		isBlocked = false; // Poczatkowo duszek nie jest zablokowany
 	}
-
+	
 	bool check_collision_with_pacman(const pacman& pacman) const {
 		return get_bounding_box().intersects(pacman.get_bounding_box());
 	}

@@ -1,7 +1,4 @@
-
 #include "map_func.h"
-#include <iostream>
-
 #include "map_class.h"
 #include "points.h"
 

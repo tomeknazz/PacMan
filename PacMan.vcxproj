@@ -138,12 +138,14 @@
     <ClCompile Include="map_func.cpp" />
     <ClCompile Include="moving_characters.h" />
     <ClCompile Include="PacMan.cpp" />
+    <ClCompile Include="voids.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
     <ClInclude Include="map_class.h" />
     <ClInclude Include="map_func.h" />
     <ClInclude Include="points.h" />
+    <ClInclude Include="voids.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
